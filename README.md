@@ -128,6 +128,23 @@ Ajoutez ces variables dans Netlify (Site settings → Environment variables) :
 
 Puis relancez un déploiement.
 
+### 5) Importer vos données JSON existantes (une fois)
+
+Si vous avez déjà un export `.json`, vous pouvez l’importer automatiquement dans Supabase
+avec le script suivant :
+
+```bash
+cd frontend
+SUPABASE_URL="https://votre-projet.supabase.co" \
+SUPABASE_SERVICE_ROLE_KEY="votre_service_role_key" \
+node scripts/import-json-to-supabase.mjs /chemin/vers/votre-export.json
+```
+
+Notes :
+- Utilisez la **Service Role Key** (Settings → API) uniquement en local.
+- Le script importe `shops` puis `teas`.
+- Après import, les données seront visibles à l’ouverture du site.
+
 ---
 
 **Made with ☕ and 💚**
