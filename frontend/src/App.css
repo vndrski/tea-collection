@@ -1,0 +1,430 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  background: #f5f5f5;
+}
+
+.app {
+  min-height: 100vh;
+  padding-bottom: 80px;
+}
+
+/* Collection */
+.collection {
+  padding: 20px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.collection-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.collection-header h1 {
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.header-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.tea-count {
+  font-size: 14px;
+  color: #666;
+}
+
+.toggle-stock {
+  padding: 6px 12px;
+  background: #28a745;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  background: white;
+  border-radius: 10px;
+  padding: 12px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.search-icon {
+  margin-right: 10px;
+  font-size: 18px;
+}
+
+.search-bar input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 16px;
+}
+
+.filter-section {
+  margin-bottom: 20px;
+}
+
+.filter-section label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.filter-buttons {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+}
+
+.filter-buttons button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 20px;
+  background: #e0e0e0;
+  color: #333;
+  font-size: 14px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.filter-buttons button.active {
+  background: #28a745;
+  color: white;
+}
+
+.tea-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.tea-card {
+  background: white;
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  gap: 16px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.tea-card.out-of-stock {
+  opacity: 0.7;
+}
+
+.out-of-stock-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+
+.out-of-stock-overlay span {
+  color: white;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.tea-image {
+  width: 80px;
+  height: 80px;
+  border-radius: 8px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.tea-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.placeholder-image {
+  width: 100%;
+  height: 100%;
+  background: #f0f0f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+}
+
+.tea-info {
+  flex: 1;
+}
+
+.tea-info h3 {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+.tea-type {
+  color: #28a745;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.tea-brand {
+  color: #666;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.tea-details {
+  display: flex;
+  gap: 12px;
+  font-size: 12px;
+  color: #666;
+}
+
+/* Add Tea */
+.add-tea {
+  padding: 20px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.add-tea header {
+  margin-bottom: 24px;
+}
+
+.add-tea h1 {
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+.add-tea header p {
+  color: #666;
+  font-size: 14px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 16px;
+  font-family: inherit;
+}
+
+.form-group textarea {
+  resize: vertical;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.button-group {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.button-group button {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 20px;
+  background: #e0e0e0;
+  color: #333;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.button-group button.active {
+  background: #28a745;
+  color: white;
+}
+
+.temperature-selector {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.temperature-selector button {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid #ddd;
+  background: white;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.temperature-value {
+  flex: 1;
+  padding: 12px;
+  background: #28a745;
+  color: white;
+  border-radius: 20px;
+  text-align: center;
+  font-weight: 500;
+}
+
+.form-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 32px;
+}
+
+.btn-primary,
+.btn-secondary {
+  flex: 1;
+  padding: 14px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: #28a745;
+  color: white;
+}
+
+.btn-secondary {
+  background: #e0e0e0;
+  color: #333;
+}
+
+/* Moments */
+.moments {
+  padding: 20px;
+  text-align: center;
+}
+
+.moments header {
+  margin-bottom: 40px;
+}
+
+.moments h1 {
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+.count {
+  color: #666;
+  font-size: 14px;
+}
+
+.empty-state {
+  margin-top: 80px;
+}
+
+.empty-icon {
+  font-size: 80px;
+  margin-bottom: 20px;
+}
+
+.empty-state h2 {
+  font-size: 20px;
+  margin-bottom: 8px;
+}
+
+.empty-state p {
+  color: #666;
+}
+
+.fab {
+  position: fixed;
+  bottom: 100px;
+  right: 20px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #28a745;
+  color: white;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+/* Bottom Navigation */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  border-top: 1px solid #e0e0e0;
+  display: flex;
+  justify-content: space-around;
+  padding: 8px 0;
+  z-index: 100;
+}
+
+.bottom-nav button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px 16px;
+  color: #666;
+  font-size: 12px;
+}
+
+.bottom-nav button.active {
+  color: #28a745;
+}
+
+.nav-icon {
+  font-size: 24px;
+}
+
+.add-button {
+  background: #28a745 !important;
+  color: white !important;
+  border-radius: 8px;
+}
+
+.loading {
+  text-align: center;
+  padding: 40px;
+  color: #666;
+}

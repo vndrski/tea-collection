@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Sereni-Tea">
+  <title>Sereni-Tea - My Tea Collection</title>
+  <link rel="icon" type="image/png" href="logo.png">
+  <link rel="apple-touch-icon" href="logo.png">
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app">
+    <!-- Home Button (visible on all pages except collection) -->
+    <button class="home-btn hidden" id="home-btn">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+        <polyline points="9 22 9 12 15 12 15 22"></polyline>
+      </svg>
+    </button>
+
+    <!-- Collection View -->
+    <div id="collection-view" class="view active">
+      <header class="collection-header">
+        <div class="app-branding">
+          <img src="logo.png" alt="Sereni-Tea Logo" class="app-logo">
+          <h1>Sereni-Tea</h1>
+        </div>
+        <div class="header-actions">
+          <span class="tea-count" id="tea-count">0 teas</span>
+          <button class="export-btn" id="export-btn" title="Exporter mes données">📤</button>
+          <button class="import-btn" id="import-btn" title="Importer des données">📥</button>
+          <input type="file" id="import-file" accept=".json" style="display: none;">
+          <a href="shops-manager.html" class="shops-link" title="Gérer les boutiques">🏪</a>
+          <button class="toggle-stock" id="toggle-stock">Show Out of Stock</button>
+        </div>
+      </header>
+
+      <div class="search-bar">
+        <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"></circle>
+          <path d="m21 21-4.35-4.35"></path>
+        </svg>
+        <input type="text" id="search-input" placeholder="Search teas or brands...">
+      </div>
+
+      <div class="filter-section">
+        <label>Filter by Type</label>
+        <div class="filter-buttons" id="filter-buttons">
+          <button class="filter-btn active" data-type="All">All</button>
+          <button class="filter-btn" data-type="Oolong">Oolong</button>
+          <button class="filter-btn" data-type="Black">Black</button>
+          <button class="filter-btn" data-type="Green">Green</button>
+          <button class="filter-btn" data-type="White">White</button>
+          <button class="filter-btn" data-type="Herbal">Herbal</button>
+        </div>
+      </div>
+
+      <div class="tea-list" id="tea-list">
+        <!-- Teas will be inserted here -->
+      </div>
+    </div>
+
+    <!-- Tea Detail View -->
+    <div id="tea-detail-view" class="view">
+      <header class="detail-header">
+        <button class="back-btn" id="back-to-collection">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+        </button>
+        <div class="detail-actions">
+          <button class="edit-btn" id="edit-tea-btn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+            </svg>
+          </button>
+          <button class="delete-btn" id="delete-tea-btn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="3 6 5 6 21 6"></polyline>
+              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            </svg>
+          </button>
+        </div>
+      </header>
+
+      <div class="tea-detail-content" id="tea-detail-content">
+        <!-- Content will be inserted here -->
+      </div>
+    </div>
+
+    <!-- Timer Floating Widget -->
+    <div id="timer-widget" class="timer-widget hidden">
+      <div class="timer-widget-content">
+        <div class="timer-circular-progress">
+          <svg viewBox="0 0 140 140">
+            <circle class="timer-circle-bg" cx="70" cy="70" r="63" />
+            <circle class="timer-circle-progress" cx="70" cy="70" r="63" id="timer-circle" />
+          </svg>
+          <div class="timer-widget-display" id="timer-widget-display">00:00</div>
+        </div>
+        <button class="timer-widget-close" id="close-timer">×</button>
+      </div>
+    </div>
+
+    <!-- Timer FAB Button -->
+    <button class="timer-fab" id="timer-fab">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="10"></circle>
+        <polyline points="12 6 12 12 16 14"></polyline>
+      </svg>
+    </button>
+
+    <!-- Timer Modal -->
+    <div id="timer-modal" class="timer-modal hidden">
+      <div class="timer-modal-content">
+        <h3>Durée d'infusion</h3>
+        <div class="timer-presets-grid">
+          <button class="preset-btn-large" data-seconds="20">20s</button>
+          <button class="preset-btn-large" data-seconds="35">35s</button>
+          <button class="preset-btn-large" data-seconds="55">55s</button>
+          <button class="preset-btn-large" data-seconds="80">1m20</button>
+          <button class="preset-btn-large" data-seconds="120">2min</button>
+        </div>
+        <button class="timer-modal-close" id="close-timer-modal">Annuler</button>
+      </div>
+    </div>
+
+    <!-- Map View -->
+    <div id="map-view" class="view">
+      <header class="map-header">
+        <button class="back-btn" id="back-from-map">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+        </button>
+        <h2>Origines des Thés</h2>
+      </header>
+      <div class="asia-map-container">
+        <svg class="asia-map" viewBox="150 100 600 550" id="asia-map-svg">
+          <!-- Carte réaliste de l'Asie -->
+          
+          <!-- China (forme plus réaliste) -->
+          <path class="region" data-region="China" d="M 350 180 L 380 160 L 420 150 L 460 155 L 490 160 L 520 170 L 545 185 L 560 200 L 570 220 L 575 245 L 570 270 L 560 290 L 545 305 L 525 315 L 500 320 L 475 325 L 450 325 L 425 320 L 400 310 L 380 295 L 365 280 L 355 260 L 350 240 L 345 220 L 345 200 Z" fill="#e8e8e8" stroke="#666666" stroke-width="1"/>
+          
+          <!-- India (forme plus réaliste) -->
+          <path class="region" data-region="India" d="M 220 260 L 250 255 L 280 260 L 305 275 L 320 295 L 330 320 L 335 345 L 335 370 L 330 395 L 320 415 L 305 430 L 285 440 L 265 445 L 245 440 L 230 425 L 220 405 L 215 380 L 215 355 L 215 330 L 215 305 L 218 280 Z" fill="#e8e8e8" stroke="#666666" stroke-width="1"/>
+          
+          <!-- Japan (îles) -->
+          <path class="region" data-region="Japan" d="M 680 200 L 695 190 L 705 195 L 710 210 L 710 230 L 705 245 L 695 250 L 685 245 L 680 230 L 680 215 Z M 690 255 L 700 250 L 710 255 L 715 270 L 715 290 L 710 305 L 700 310 L 690 305 L 685 290 L 685 270 Z" fill="#e8e8e8" stroke="#666666" stroke-width="1"/>
+          
+          <!-- Korea (péninsule) -->
+          <path class="region" data-region="Korea" d="M 620 195 L 635 188 L 645 190 L 650 205 L 650 225 L 645 240 L 635 250 L 625 248 L 620 235 L 618 215 Z" fill="#e8e8e8" stroke="#666666" stroke-width="1"/>
+          
+          <!-- Taiwan -->
+          <ellipse class="region" data-region="Taiwan" cx="610" cy="295" rx="10" ry="30" fill="#e8e8e8" stroke="#666666" stroke-width="1"/>
+          
+          <!-- Nepal (petit pays montagneux) -->
+          <path class="region" data-region="Nepal" d="M 320 255 L 340 250 L 355 252 L 365 258 L 368 268 L 360 275 L 345 278 L 330 275 L 322 268 Z" fill="#e8e8e8" stroke="#666666" stroke-width="1"/>
+          
+          <!-- Thailand -->
+          <path class="region" data-region="Thailand" d="M 430 340 L 445 335 L 455 340 L 462 355 L 465 375 L 465 395 L 460 415 L 450 430 L 440 435 L 430 430 L 425 415 L 422 395 L 422 375 L 425 355 Z" fill="#e8e8e8" stroke="#666666" stroke-width="1"/>
+          
+          <!-- Vietnam (forme en S) -->
+          <path class="region" data-region="Vietnam" d="M 475 335 L 490 330 L 500 335 L 505 350 L 507 370 L 505 390 L 500 410 L 492 430 L 485 445 L 478 455 L 472 450 L 468 435 L 467 415 L 468 395 L 470 375 L 472 355 Z" fill="#e8e8e8" stroke="#666666" stroke-width="1"/>
+          
+          <!-- Sri Lanka (île) -->
+          <ellipse class="region" data-region="Sri Lanka" cx="285" cy="470" rx="12" ry="20" fill="#e8e8e8" stroke="#666666" stroke-width="1"/>
+          
+          <!-- Indonesia (archipel simplifié) -->
+          <path class="region" data-region="Indonesia" d="M 420 480 L 480 475 L 540 478 L 590 485 L 620 492 L 610 510 L 580 515 L 540 515 L 490 512 L 440 508 L 410 500 Z M 470 525 L 510 522 L 540 525 L 555 535 L 545 545 L 510 547 L 475 543 Z" fill="#e8e8e8" stroke="#666666" stroke-width="1"/>
+          
+          <!-- Autres pays asiatiques en gris clair (non cliquables) -->
+          <path d="M 200 190 L 240 185 L 270 192 L 290 210 L 300 235 L 295 250 L 280 245 L 260 238 L 240 225 L 220 210 Z" fill="#f5f5f5" stroke="#cccccc" stroke-width="0.5" opacity="0.6"/>
+          <path d="M 510 340 L 530 335 L 545 345 L 548 365 L 540 380 L 525 385 L 512 378 L 508 360 Z" fill="#f5f5f5" stroke="#cccccc" stroke-width="0.5" opacity="0.6"/>
+          <path d="M 360 450 L 395 445 L 415 455 L 420 475 L 405 485 L 375 485 L 358 475 Z" fill="#f5f5f5" stroke="#cccccc" stroke-width="0.5" opacity="0.6"/>
+          
+          <!-- Labels avec fond blanc pour lisibilité -->
+          <text x="450" y="240" text-anchor="middle" fill="#000000" font-size="18" font-weight="700">CHINA</text>
+          <text x="270" y="350" text-anchor="middle" fill="#000000" font-size="16" font-weight="700">INDIA</text>
+          <text x="695" y="230" text-anchor="middle" fill="#000000" font-size="14" font-weight="700">JAPAN</text>
+          <text x="632" y="220" text-anchor="middle" fill="#000000" font-size="12" font-weight="600">KOREA</text>
+          <text x="610" y="300" text-anchor="middle" fill="#000000" font-size="11" font-weight="600">TAIWAN</text>
+          <text x="345" y="265" text-anchor="middle" fill="#000000" font-size="10" font-weight="600">NEPAL</text>
+          <text x="435" y="395" text-anchor="middle" fill="#000000" font-size="13" font-weight="600">THAILAND</text>
+          <text x="487" y="385" text-anchor="middle" fill="#000000" font-size="13" font-weight="600">VIETNAM</text>
+          <text x="285" y="473" text-anchor="middle" fill="#000000" font-size="10" font-weight="600">SRI LANKA</text>
+          <text x="510" y="500" text-anchor="middle" fill="#000000" font-size="14" font-weight="600">INDONESIA</text>
+        </svg>
+        
+        <div class="region-details hidden" id="region-details">
+          <button class="close-details" id="close-details">×</button>
+          <h3 id="region-name"></h3>
+          <div id="region-teas-list"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Wishlist View -->
+    <div id="wishlist-view" class="view">
+      <header class="collection-header">
+        <div class="app-branding">
+          <img src="logo.png" alt="Sereni-Tea Logo" class="app-logo">
+          <h1>✨ My Wishlist</h1>
+        </div>
+        <div class="header-actions">
+          <span class="tea-count" id="wishlist-count">0 teas</span>
+        </div>
+      </header>
+
+      <div class="search-bar">
+        <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"></circle>
+          <path d="m21 21-4.35-4.35"></path>
+        </svg>
+        <input type="text" id="wishlist-search-input" placeholder="Search wishlist...">
+      </div>
+
+      <div class="filter-section">
+        <label>Filter by Type</label>
+        <div class="filter-buttons" id="wishlist-filter-buttons">
+          <button class="filter-btn active" data-type="All">All</button>
+          <button class="filter-btn" data-type="Oolong">Oolong</button>
+          <button class="filter-btn" data-type="Black">Black</button>
+          <button class="filter-btn" data-type="Green">Green</button>
+          <button class="filter-btn" data-type="White">White</button>
+          <button class="filter-btn" data-type="Herbal">Herbal</button>
+        </div>
+      </div>
+
+      <div class="wishlist-list" id="wishlist-list">
+        <!-- Wishlist items will be inserted here -->
+      </div>
+    </div>
+
+    <!-- Add Tea View -->
+    <div id="add-tea-view" class="view">
+      <header>
+        <h1>Add New Tea</h1>
+        <p>Build your collection</p>
+      </header>
+
+      <form id="add-tea-form">
+        <div class="form-group">
+          <label>Name</label>
+          <input type="text" id="tea-name" placeholder="Dragon Well" required>
+        </div>
+
+        <div class="form-group">
+          <label>Brand</label>
+          <input type="text" id="tea-brand" placeholder="Golden Dragon">
+        </div>
+
+        <div class="form-group">
+          <label>Origin / Provenance</label>
+          <input type="text" id="tea-origin" placeholder="ex: China, Japan, India, Nepal, Vietnam, Taiwan..." list="origin-suggestions">
+          <datalist id="origin-suggestions">
+            <option value="China">
+            <option value="Japan">
+            <option value="India">
+            <option value="Taiwan">
+            <option value="Sri Lanka">
+            <option value="Nepal">
+            <option value="Vietnam">
+            <option value="Thailand">
+            <option value="Korea">
+            <option value="Indonesia">
+          </datalist>
+          <small>L'origine sera normalisée automatiquement (ex: Chine → China, Taïwan → Taiwan)</small>
+        </div>
+
+        <div class="form-group">
+          <label>URL (Optional)</label>
+          <input type="url" id="tea-url" placeholder="https://teashop.com/dragon-well">
+          <div class="url-actions">
+            <button type="button" class="btn-scrape" id="scrape-info-btn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              Scrape Info
+            </button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Image URL (Optional)</label>
+          <input type="url" id="tea-image-url" placeholder="https://example.com/tea-image.jpg">
+          <small>Collez l'URL d'une image ou laissez vide si scrapée automatiquement</small>
+          <div class="image-preview" id="image-preview" style="display: none;">
+            <img id="preview-img" src="" alt="Preview">
+            <button type="button" class="remove-image-btn" id="remove-image-btn">×</button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Type</label>
+          <div class="button-group" id="type-buttons">
+            <button type="button" class="type-btn" data-type="Oolong">Oolong</button>
+            <button type="button" class="type-btn" data-type="Black">Black</button>
+            <button type="button" class="type-btn active" data-type="Green">Green</button>
+            <button type="button" class="type-btn" data-type="White">White</button>
+            <button type="button" class="type-btn" data-type="Herbal">Herbal</button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Temperature</label>
+          <div class="temperature-selector">
+            <button type="button" class="temp-btn" id="temp-down">‹</button>
+            <span class="temperature-value" id="temperature-display">85-90°C</span>
+            <button type="button" class="temp-btn" id="temp-up">›</button>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Quantity</label>
+            <input type="text" id="tea-quantity" placeholder="6g">
+          </div>
+          <div class="form-group">
+            <label>Time</label>
+            <input type="text" id="tea-time" placeholder="2-3 min">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Infusions</label>
+          <input type="text" id="tea-infusions" placeholder="30s, 45s, 1m30s, 3m, 5m">
+        </div>
+
+        <div class="form-group">
+          <label>Method</label>
+          <div class="button-group" id="method-buttons">
+            <button type="button" class="method-btn active" data-method="Gongfu">Gongfu</button>
+            <button type="button" class="method-btn" data-method="Western">Western</button>
+            <button type="button" class="method-btn" data-method="Grandpa">Grandpa</button>
+            <button type="button" class="method-btn" data-method="Cold Brew">Cold Brew</button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Stock</label>
+          <div class="button-group" id="stock-buttons">
+            <button type="button" class="stock-btn active" data-stock="true">In Stock</button>
+            <button type="button" class="stock-btn" data-stock="false">Out of Stock</button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>
+            <input type="checkbox" id="tea-wishlist" class="wishlist-checkbox">
+            <span class="wishlist-label">✨ Add to Wishlist (won't appear in stock)</span>
+          </label>
+          <small>Check this to add the tea to your wishlist instead of your collection</small>
+        </div>
+
+        <div class="form-group">
+          <label>Description</label>
+          <textarea id="tea-description" rows="4" placeholder="Spring 2025. Lishan. Sweet aroma, fruit and floral taste profile."></textarea>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn-secondary" id="cancel-btn">Cancel</button>
+          <button type="submit" class="btn-primary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+              <polyline points="17 21 17 13 7 13 7 21"></polyline>
+              <polyline points="7 3 7 8 15 8"></polyline>
+            </svg>
+            Save Tea
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav" id="bottom-nav">
+      <button class="nav-btn active" data-view="collection">
+        <svg class="nav-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+          <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+        </svg>
+        <span>Collection</span>
+      </button>
+      <button class="nav-btn" data-view="wishlist">
+        <svg class="nav-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+        </svg>
+        <span>Wishlist</span>
+      </button>
+      <button class="nav-btn" data-view="map">
+        <svg class="nav-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon>
+          <line x1="8" y1="2" x2="8" y2="18"></line>
+          <line x1="16" y1="6" x2="16" y2="22"></line>
+        </svg>
+        <span>Origines</span>
+      </button>
+      <button class="nav-btn add-button" data-view="add-tea">
+        <svg class="nav-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+        <span>Add Tea</span>
+      </button>
+    </nav>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

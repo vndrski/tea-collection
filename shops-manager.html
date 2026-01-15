@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="logo.png">
+  <title>Sereni-Tea - Shops Manager</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+      background: #ffffff;
+      color: #000000;
+      padding: 24px 20px;
+      max-width: 680px;
+      margin: 0 auto;
+      min-height: 100vh;
+    }
+
+    h1 {
+      margin-bottom: 32px;
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      color: #000;
+    }
+
+    h2 {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      color: #000;
+    }
+
+    .section-title {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      margin-top: 40px;
+      color: #000;
+    }
+
+    .shop-card {
+      background: white;
+      border: 1px solid #f0f0f0;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 16px;
+      transition: all 0.2s;
+    }
+
+    .shop-card:hover {
+      border-color: #a6ff47;
+    }
+
+    .shop-card h3 {
+      margin-bottom: 12px;
+      color: #000000;
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .shop-card p {
+      color: #666;
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+
+    .shop-card a {
+      color: #000000;
+      text-decoration: underline;
+    }
+
+    .shop-card a:hover {
+      color: #666;
+    }
+
+    .variations {
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid #f0f0f0;
+    }
+
+    .variations strong {
+      font-size: 13px;
+      color: #666;
+      font-weight: 600;
+    }
+
+    .variations span {
+      display: inline-block;
+      background: #a6ff47;
+      color: #000000;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-right: 6px;
+      margin-top: 8px;
+    }
+
+    .add-shop {
+      background: white;
+      border: 1px solid #f0f0f0;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 32px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      font-size: 14px;
+      color: #000;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: #a6ff47;
+    }
+
+    .form-group small {
+      display: block;
+      margin-top: 6px;
+      color: #999;
+      font-size: 12px;
+    }
+
+    button {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 700;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: #a6ff47;
+      color: #000000;
+    }
+
+    .btn-primary:hover {
+      opacity: 0.8;
+    }
+
+    .btn-secondary {
+      background: #f0f0f0;
+      color: #666;
+      margin-left: 8px;
+    }
+
+    .btn-secondary:hover {
+      background: #e0e0e0;
+    }
+
+    .btn-delete {
+      background: #ff3319;
+      color: white;
+      padding: 8px 16px;
+      font-size: 12px;
+      margin-top: 12px;
+    }
+
+    .btn-delete:hover {
+      opacity: 0.8;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 24px;
+      color: #000000;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 14px;
+      padding: 8px 16px;
+      border-radius: 20px;
+      transition: all 0.2s;
+    }
+
+    .back-link:hover {
+      background: #a6ff47;
+    }
+
+    .no-shops {
+      text-align: center;
+      padding: 40px 20px;
+      color: #999;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <a href="index.html" class="back-link">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <polyline points="15 18 9 12 15 6"></polyline>
+    </svg>
+    Retour à la collection
+  </a>
+  <h1>Gestion des Boutiques</h1>
+
+  <div class="add-shop">
+    <h2>Nouvelle boutique</h2>
+    <form id="add-shop-form">
+      <div class="form-group">
+        <label>Nom de la boutique *</label>
+        <input type="text" id="shop-name" placeholder="ex: Le Parti du Thé" required>
+      </div>
+      <div class="form-group">
+        <label>Site web</label>
+        <input type="url" id="shop-website" placeholder="ex: https://www.lepartiduthe.com">
+      </div>
+      <div class="form-group">
+        <label>Variations de nom reconnues</label>
+        <input type="text" id="shop-variations" placeholder="ex: lepartiduthe, le-parti-du-the, partiduthe">
+        <small>Séparées par des virgules. Ces variations seront automatiquement détectées lors du scraping.</small>
+      </div>
+      <button type="submit" class="btn-primary">Ajouter</button>
+    </form>
+  </div>
+
+  <h2 class="section-title">Mes boutiques</h2>
+  <div id="shops-list">
+    <!-- Les boutiques seront affichées ici -->
+  </div>
+
+  <script>
+    // Charger les boutiques depuis localStorage
+    function loadShops() {
+      const stored = localStorage.getItem('teaShopsDatabase');
+      let shops = [];
+      
+      if (stored) {
+        shops = JSON.parse(stored);
+      } else {
+        // Boutiques par défaut
+        shops = [
+          {
+            id: 1,
+            name: "Le Parti du Thé",
+            variations: ["lepartiduthe", "le-parti-du-the", "lepartiduthe.com", "partiduthe"],
+            urlPatterns: ["lepartiduthe", "partiduthe"],
+            website: "https://www.lepartiduthe.com"
+          },
+          {
+            id: 2,
+            name: "Palais des Thés",
+            variations: ["palaisdesthes", "palais-des-thes", "palaisdesthes.com"],
+            urlPatterns: ["palaisdesthes", "palais-des-thes"],
+            website: "https://www.palaisdesthes.com"
+          },
+          {
+            id: 3,
+            name: "Mariage Frères",
+            variations: ["mariagefreres", "mariage-freres", "mariagefreres.com"],
+            urlPatterns: ["mariagefreres", "mariage-freres"],
+            website: "https://www.mariagefreres.com"
+          }
+        ];
+        saveShops(shops);
+      }
+      
+      return shops;
+    }
+
+    function saveShops(shops) {
+      localStorage.setItem('teaShopsDatabase', JSON.stringify(shops));
+    }
+
+    function renderShops() {
+      const shops = loadShops();
+      const list = document.getElementById('shops-list');
+      
+      if (shops.length === 0) {
+        list.innerHTML = '<div class="no-shops">Aucune boutique enregistrée pour le moment.</div>';
+        return;
+      }
+
+      list.innerHTML = shops.map(shop => `
+        <div class="shop-card">
+          <h3>${shop.name}</h3>
+          ${shop.website ? `<p><strong>Site:</strong> <a href="${shop.website}" target="_blank">${shop.website}</a></p>` : ''}
+          <div class="variations">
+            <strong>Variations reconnues:</strong>
+            <div>
+              ${shop.variations.map(v => `<span>${v}</span>`).join('')}
+            </div>
+          </div>
+          <button class="btn-delete" onclick="deleteShop(${shop.id})">Supprimer la boutique</button>
+        </div>
+      `).join('');
+    }
+
+    function deleteShop(id) {
+      if (!confirm('Êtes-vous sûr de vouloir supprimer cette boutique ?')) {
+        return;
+      }
+      
+      const shops = loadShops();
+      const filtered = shops.filter(s => s.id !== id);
+      saveShops(filtered);
+      renderShops();
+    }
+
+    document.getElementById('add-shop-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      
+      const name = document.getElementById('shop-name').value.trim();
+      const website = document.getElementById('shop-website').value.trim();
+      const variationsInput = document.getElementById('shop-variations').value.trim();
+      
+      if (!name) {
+        alert('Le nom de la boutique est requis');
+        return;
+      }
+
+      const shops = loadShops();
+      const variations = variationsInput 
+        ? variationsInput.split(',').map(v => v.trim()).filter(v => v)
+        : [];
+      
+      // Ajouter aussi le nom normalisé comme variation
+      const normalizedName = name.toLowerCase().replace(/[^a-z0-9]/g, '');
+      if (normalizedName && !variations.includes(normalizedName)) {
+        variations.push(normalizedName);
+      }
+
+      const newShop = {
+        id: Math.max(...shops.map(s => s.id), 0) + 1,
+        name: name,
+        variations: variations,
+        urlPatterns: variations,
+        website: website || null
+      };
+
+      shops.push(newShop);
+      saveShops(shops);
+      renderShops();
+      
+      // Réinitialiser le formulaire
+      document.getElementById('add-shop-form').reset();
+      alert('Boutique ajoutée avec succès !');
+    });
+
+    // Afficher les boutiques au chargement
+    renderShops();
+  </script>
+</body>
+</html>
