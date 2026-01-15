@@ -3,7 +3,7 @@ import TeaCard from './TeaCard';
 
 const TEA_TYPES = ['All', 'Oolong', 'Black', 'Green', 'White', 'Herbal'];
 
-function Collection({ teas, loading }) {
+function Collection({ teas, loading, onSelectTea }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedType, setSelectedType] = useState('All');
   const [showOutOfStock, setShowOutOfStock] = useState(false);
@@ -91,7 +91,7 @@ function Collection({ teas, loading }) {
           </div>
         ) : (
           filteredTeas.map(tea => (
-            <TeaCard key={tea.id} tea={tea} />
+            <TeaCard key={tea.id} tea={tea} onSelect={onSelectTea} />
           ))
         )}
       </div>

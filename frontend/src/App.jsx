@@ -4,6 +4,7 @@ import AddTea from './components/AddTea';
 import Wishlist from './components/Wishlist';
 import Shops from './components/Shops';
 import OriginsMap from './components/OriginsMap';
+import TeaDetail from './components/TeaDetail';
 import { supabase } from './lib/supabaseClient';
 import './legacy.css';
 import './App.css';
@@ -32,6 +33,7 @@ function App() {
   const [shops, setShops] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [selectedTea, setSelectedTea] = useState(null);
 
   useEffect(() => {
     loadTeas();
@@ -83,30 +85,44 @@ function App() {
   return (
     <div className="app">
       {error && <div className="error-banner">⚠️ {error}</div>}
-      {activeTab === 'collection' && (
-        <Collection teas={collectionTeas} loading={loading} />
-      )}
-      {activeTab === 'wishlist' && (
-        <Wishlist teas={wishlistTeas} loading={loading} />
-      )}
-      {activeTab === 'map' && (
-        <OriginsMap teas={collectionTeas} loading={loading} />
-      )}
-      {activeTab === 'shops' && (
-        <Shops shops={shops} onRefresh={loadShops} />
-      )}
-      {activeTab === 'add' && (
-        <AddTea
-          shops={shops}
-          onTeaAdded={async () => {
-            await loadTeas();
-            setActiveTab('collection');
-          }}
-          onCancel={() => setActiveTab('collection')}
-        />
+      {selectedTea ? (
+        <TeaDetail tea={selectedTea} onBack={() => setSelectedTea(null)} />
+      ) : (
+        <>
+          {activeTab === 'collection' && (
+            <Collection
+              teas={collectionTeas}
+              loading={loading}
+              onSelectTea={setSelectedTea}
+            />
+          )}
+          {activeTab === 'wishlist' && (
+            <Wishlist
+              teas={wishlistTeas}
+              loading={loading}
+              onSelectTea={setSelectedTea}
+            />
+          )}
+          {activeTab === 'map' && (
+            <OriginsMap teas={collectionTeas} loading={loading} />
+          )}
+          {activeTab === 'shops' && (
+            <Shops shops={shops} onRefresh={loadShops} />
+          )}
+          {activeTab === 'add' && (
+            <AddTea
+              shops={shops}
+              onTeaAdded={async () => {
+                await loadTeas();
+                setActiveTab('collection');
+              }}
+              onCancel={() => setActiveTab('collection')}
+            />
+          )}
+        </>
       )}
 
-      <nav className="bottom-nav">
+      {!selectedTea && <nav className="bottom-nav">
         <button
           className={`nav-btn ${activeTab === 'collection' ? 'active' : ''}`}
           onClick={() => setActiveTab('collection')}
@@ -155,7 +171,7 @@ function App() {
           </svg>
           <span>Add Tea</span>
         </button>
-      </nav>
+      </nav>}
     </div>
   );
 }

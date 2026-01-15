@@ -1,25 +1,19 @@
-function TeaCard({ tea }) {
+function TeaCard({ tea, onSelect }) {
   const brand = tea.brand || '';
-  const handleOpenUrl = () => {
-    if (tea.url) {
-      window.open(tea.url, '_blank', 'noopener,noreferrer');
-    }
-  };
-
-  const isClickable = Boolean(tea.url);
+  const isClickable = Boolean(onSelect);
   return (
     <div
       className={`tea-card ${!tea.inStock ? 'out-of-stock' : ''} ${
         isClickable ? 'clickable' : ''
       }`}
-      onClick={handleOpenUrl}
+      onClick={() => onSelect?.(tea)}
       role={isClickable ? 'button' : undefined}
       tabIndex={isClickable ? 0 : undefined}
       onKeyDown={(e) => {
         if (!isClickable) return;
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
-          handleOpenUrl();
+          onSelect?.(tea);
         }
       }}
     >

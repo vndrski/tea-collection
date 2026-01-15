@@ -3,7 +3,7 @@ import TeaCard from './TeaCard';
 
 const TEA_TYPES = ['All', 'Oolong', 'Black', 'Green', 'White', 'Herbal'];
 
-function Wishlist({ teas, loading }) {
+function Wishlist({ teas, loading, onSelectTea }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedType, setSelectedType] = useState('All');
 
@@ -81,7 +81,9 @@ function Wishlist({ teas, loading }) {
             <p>No wishlist teas found</p>
           </div>
         ) : (
-          filteredTeas.map((tea) => <TeaCard key={tea.id} tea={tea} />)
+          filteredTeas.map((tea) => (
+            <TeaCard key={tea.id} tea={tea} onSelect={onSelectTea} />
+          ))
         )}
       </div>
     </div>
