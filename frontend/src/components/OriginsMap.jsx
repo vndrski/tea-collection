@@ -1,5 +1,30 @@
 import { useMemo, useState } from 'react';
 
+const REGION_CHIPS = [
+  'China',
+  'Fujian',
+  'Guangdong',
+  'Pinglin',
+  'Zhejiang',
+  'Hangzhou',
+  'Guizhou',
+  'Anhui',
+  'Taiwan',
+  'Nantou',
+  'Taitung',
+  'Alishan',
+  'Japan',
+  'Korea',
+  'Nepal',
+  'Thailand',
+  'Vietnam',
+  'Sri Lanka',
+  'Indonesia',
+  'Java',
+  'Kenya',
+  'New Zealand'
+];
+
 function OriginsMap({ teas, loading }) {
   const [selectedRegion, setSelectedRegion] = useState(null);
 
@@ -141,6 +166,21 @@ function OriginsMap({ teas, loading }) {
           <text x="285" y="473" textAnchor="middle" fill="#000000" fontSize="10" fontWeight="600">SRI LANKA</text>
           <text x="510" y="500" textAnchor="middle" fill="#000000" fontSize="14" fontWeight="600">INDONESIA</text>
         </svg>
+
+        <div className="filter-section" style={{ marginTop: '16px' }}>
+          <label>Regions</label>
+          <div className="filter-buttons">
+            {REGION_CHIPS.map((region) => (
+              <button
+                key={region}
+                className={`filter-btn ${selectedRegion === region ? 'active' : ''}`}
+                onClick={() => setSelectedRegion(region)}
+              >
+                {region}
+              </button>
+            ))}
+          </div>
+        </div>
 
         {selectedRegion && (
           <div className="region-details">
