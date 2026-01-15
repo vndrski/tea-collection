@@ -47,6 +47,21 @@ function OriginsMap({ teas, loading }) {
       <header className="map-header">
         <h2>Origines des Thés</h2>
       </header>
+      <div className="filter-section">
+        <label>Regions</label>
+        <div className="filter-buttons">
+          {REGION_CHIPS.map((region) => (
+            <button
+              key={region}
+              className={`filter-btn ${selectedRegion === region ? 'active' : ''}`}
+              onClick={() => setSelectedRegion(region)}
+            >
+              {region}
+            </button>
+          ))}
+        </div>
+      </div>
+
       <div className="asia-map-container">
         <svg className="asia-map" viewBox="150 100 600 550">
           <path
@@ -166,21 +181,6 @@ function OriginsMap({ teas, loading }) {
           <text x="285" y="473" textAnchor="middle" fill="#000000" fontSize="10" fontWeight="600">SRI LANKA</text>
           <text x="510" y="500" textAnchor="middle" fill="#000000" fontSize="14" fontWeight="600">INDONESIA</text>
         </svg>
-
-        <div className="filter-section" style={{ marginTop: '16px' }}>
-          <label>Regions</label>
-          <div className="filter-buttons">
-            {REGION_CHIPS.map((region) => (
-              <button
-                key={region}
-                className={`filter-btn ${selectedRegion === region ? 'active' : ''}`}
-                onClick={() => setSelectedRegion(region)}
-              >
-                {region}
-              </button>
-            ))}
-          </div>
-        </div>
 
         {selectedRegion && (
           <div className="region-details">
