@@ -3,7 +3,9 @@ import Collection from './components/Collection';
 import AddTea from './components/AddTea';
 import Wishlist from './components/Wishlist';
 import Shops from './components/Shops';
+import OriginsMap from './components/OriginsMap';
 import { supabase } from './lib/supabaseClient';
+import './legacy.css';
 import './App.css';
 
 const mapTeaFromDb = (tea) => ({
@@ -87,6 +89,9 @@ function App() {
       {activeTab === 'wishlist' && (
         <Wishlist teas={wishlistTeas} loading={loading} />
       )}
+      {activeTab === 'map' && (
+        <OriginsMap teas={collectionTeas} loading={loading} />
+      )}
       {activeTab === 'shops' && (
         <Shops shops={shops} onRefresh={loadShops} />
       )}
@@ -103,28 +108,51 @@ function App() {
 
       <nav className="bottom-nav">
         <button
-          className={activeTab === 'collection' ? 'active' : ''}
+          className={`nav-btn ${activeTab === 'collection' ? 'active' : ''}`}
           onClick={() => setActiveTab('collection')}
         >
-          <span className="nav-icon">📚</span>
+          <svg className="nav-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+          </svg>
           <span>Collection</span>
         </button>
         <button
-          className={activeTab === 'wishlist' ? 'active' : ''}
+          className={`nav-btn ${activeTab === 'wishlist' ? 'active' : ''}`}
           onClick={() => setActiveTab('wishlist')}
         >
-          <span className="nav-icon">✨</span>
+          <svg className="nav-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+          </svg>
           <span>Wishlist</span>
         </button>
         <button
-          className={activeTab === 'shops' ? 'active' : ''}
+          className={`nav-btn ${activeTab === 'map' ? 'active' : ''}`}
+          onClick={() => setActiveTab('map')}
+        >
+          <svg className="nav-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon>
+            <line x1="8" y1="2" x2="8" y2="18"></line>
+            <line x1="16" y1="6" x2="16" y2="22"></line>
+          </svg>
+          <span>Origines</span>
+        </button>
+        <button
+          className={`nav-btn ${activeTab === 'shops' ? 'active' : ''}`}
           onClick={() => setActiveTab('shops')}
         >
-          <span className="nav-icon">🏪</span>
+          <svg className="nav-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M3 10h18"></path>
+            <path d="M5 10v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V10"></path>
+            <path d="M7 10V6a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v4"></path>
+          </svg>
           <span>Boutiques</span>
         </button>
-        <button onClick={() => setActiveTab('add')} className="add-button">
-          <span className="nav-icon">➕</span>
+        <button onClick={() => setActiveTab('add')} className="nav-btn add-button">
+          <svg className="nav-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
           <span>Add Tea</span>
         </button>
       </nav>

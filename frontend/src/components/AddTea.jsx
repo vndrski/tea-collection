@@ -54,13 +54,13 @@ function AddTea({ onTeaAdded, onCancel, shops = [] }) {
   };
 
   return (
-    <div className="add-tea">
+    <div id="add-tea-view">
       <header>
         <h1>Add New Tea</h1>
         <p>Build your collection</p>
       </header>
 
-      <form onSubmit={handleSubmit}>
+      <form id="add-tea-form" onSubmit={handleSubmit}>
         <div className="form-group">
           <label>Name</label>
           <input

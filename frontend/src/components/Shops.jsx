@@ -32,7 +32,10 @@ function Shops({ shops, onRefresh }) {
   return (
     <div className="collection shops">
       <header className="collection-header">
-        <h1>Boutiques</h1>
+        <div className="app-branding">
+          <img src="/logo.png" alt="Sereni-Tea Logo" className="app-logo" />
+          <h1>Boutiques</h1>
+        </div>
         <div className="header-actions">
           <span className="tea-count">{shops.length} boutiques</span>
         </div>

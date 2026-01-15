@@ -30,14 +30,28 @@ function Wishlist({ teas, loading }) {
   return (
     <div className="collection">
       <header className="collection-header">
-        <h1>Wishlist</h1>
+        <div className="app-branding">
+          <img src="/logo.png" alt="Sereni-Tea Logo" className="app-logo" />
+          <h1>✨ Wishlist</h1>
+        </div>
         <div className="header-actions">
           <span className="tea-count">{filteredTeas.length} teas</span>
         </div>
       </header>
 
       <div className="search-bar">
-        <span className="search-icon">🔍</span>
+        <svg
+          className="search-icon"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+        >
+          <circle cx="11" cy="11" r="8"></circle>
+          <path d="m21 21-4.35-4.35"></path>
+        </svg>
         <input
           type="text"
           placeholder="Search wishlist..."
@@ -52,7 +66,7 @@ function Wishlist({ teas, loading }) {
           {TEA_TYPES.map((type) => (
             <button
               key={type}
-              className={selectedType === type ? 'active' : ''}
+              className={`filter-btn ${selectedType === type ? 'active' : ''}`}
               onClick={() => setSelectedType(type)}
             >
               {type}
