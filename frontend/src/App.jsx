@@ -35,6 +35,7 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [selectedTea, setSelectedTea] = useState(null);
+  const [editingTea, setEditingTea] = useState(null);
 
   useEffect(() => {
     loadTeas();
@@ -83,11 +84,35 @@ function App() {
     [teas]
   );
 
+  const handleEditTea = (tea) => {
+    setEditingTea(tea);
+    setSelectedTea(null);
+    setActiveTab('add');
+  };
+
+  const handleDeleteTea = async (tea) => {
+    if (!tea?.id) return;
+    if (!confirm(`Supprimer "${tea.name}" ?`)) return;
+    const { error: deleteError } = await supabase.from('teas').delete().eq('id', tea.id);
+    if (deleteError) {
+      console.error('Error deleting tea:', deleteError);
+      setError(deleteError.message);
+      return;
+    }
+    setSelectedTea(null);
+    await loadTeas();
+  };
+
   return (
     <div className="app">
       {error && <div className="error-banner">⚠️ {error}</div>}
       {selectedTea ? (
-        <TeaDetail tea={selectedTea} onBack={() => setSelectedTea(null)} />
+        <TeaDetail
+          tea={selectedTea}
+          onBack={() => setSelectedTea(null)}
+          onEdit={handleEditTea}
+          onDelete={handleDeleteTea}
+        />
       ) : (
         <>
           {activeTab === 'collection' && (
@@ -113,11 +138,16 @@ function App() {
           {activeTab === 'add' && (
             <AddTea
               shops={shops}
+              initialTea={editingTea}
               onTeaAdded={async () => {
                 await loadTeas();
+                setEditingTea(null);
                 setActiveTab('collection');
               }}
-              onCancel={() => setActiveTab('collection')}
+              onCancel={() => {
+                setEditingTea(null);
+                setActiveTab('collection');
+              }}
             />
           )}
         </>
@@ -167,7 +197,13 @@ function App() {
           </svg>
           <span>Boutiques</span>
         </button>
-        <button onClick={() => setActiveTab('add')} className="nav-btn add-button">
+        <button
+          onClick={() => {
+            setEditingTea(null);
+            setActiveTab('add');
+          }}
+          className="nav-btn add-button"
+        >
           <svg className="nav-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <line x1="12" y1="5" x2="12" y2="19"></line>
             <line x1="5" y1="12" x2="19" y2="12"></line>

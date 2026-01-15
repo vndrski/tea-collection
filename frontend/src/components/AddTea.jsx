@@ -1,10 +1,10 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
 
 const TEA_TYPES = ['Oolong', 'Black', 'Green', 'White', 'Herbal'];
 const METHODS = ['Gongfu', 'Western', 'Grandpa', 'Cold Brew'];
 
-function AddTea({ onTeaAdded, onCancel, shops = [] }) {
+function AddTea({ onTeaAdded, onCancel, shops = [], initialTea = null }) {
   const [formData, setFormData] = useState({
     name: '',
     type: 'Green',
@@ -20,6 +20,24 @@ function AddTea({ onTeaAdded, onCancel, shops = [] }) {
   });
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
+  const isEditing = Boolean(initialTea?.id);
+
+  useEffect(() => {
+    if (!initialTea) return;
+    setFormData({
+      name: initialTea.name || '',
+      type: initialTea.type || 'Green',
+      brand: initialTea.brand || '',
+      temperature: initialTea.temperature || '85-90°C',
+      quantity: initialTea.quantity || '',
+      time: initialTea.time || '',
+      infusions: initialTea.infusions || '',
+      method: initialTea.method || 'Gongfu',
+      inStock: initialTea.inStock ?? true,
+      isWishlist: initialTea.isWishlist ?? false,
+      description: initialTea.description || ''
+    });
+  }, [initialTea]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -36,13 +54,20 @@ function AddTea({ onTeaAdded, onCancel, shops = [] }) {
       method: formData.method,
       in_stock: formData.inStock,
       is_wishlist: formData.isWishlist,
-      description: formData.description
+      description: formData.description,
+      origin: initialTea?.origin ?? null,
+      url: initialTea?.url ?? null,
+      image_url: initialTea?.imageUrl ?? null
     };
 
-    const { error: insertError } = await supabase.from('teas').insert(payload);
-    if (insertError) {
-      console.error('Error adding tea:', insertError);
-      setError(insertError.message);
+    const request = isEditing
+      ? supabase.from('teas').update(payload).eq('id', initialTea.id)
+      : supabase.from('teas').insert(payload);
+
+    const { error: saveError } = await request;
+    if (saveError) {
+      console.error('Error saving tea:', saveError);
+      setError(saveError.message);
     } else {
       onTeaAdded();
     }
@@ -56,8 +81,8 @@ function AddTea({ onTeaAdded, onCancel, shops = [] }) {
   return (
     <div id="add-tea-view">
       <header>
-        <h1>Add New Tea</h1>
-        <p>Build your collection</p>
+        <h1>{isEditing ? 'Edit Tea' : 'Add New Tea'}</h1>
+        <p>{isEditing ? 'Update your tea' : 'Build your collection'}</p>
       </header>
 
       <form id="add-tea-form" onSubmit={handleSubmit}>
@@ -209,7 +234,7 @@ function AddTea({ onTeaAdded, onCancel, shops = [] }) {
             Cancel
           </button>
           <button type="submit" className="btn-primary" disabled={submitting}>
-            {submitting ? 'Saving…' : '💾 Save Tea'}
+            {submitting ? 'Saving…' : isEditing ? '💾 Save Changes' : '💾 Save Tea'}
           </button>
         </div>
       </form>
