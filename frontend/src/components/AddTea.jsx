@@ -9,6 +9,9 @@ function AddTea({ onTeaAdded, onCancel, shops = [], initialTea = null }) {
     name: '',
     type: 'Green',
     brand: '',
+    origin: '',
+    url: '',
+    imageUrl: '',
     temperature: '85-90°C',
     quantity: '6g',
     time: '2-3 min',
@@ -20,6 +23,7 @@ function AddTea({ onTeaAdded, onCancel, shops = [], initialTea = null }) {
   });
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
+  const [scraping, setScraping] = useState(false);
   const isEditing = Boolean(initialTea?.id);
 
   useEffect(() => {
@@ -28,6 +32,9 @@ function AddTea({ onTeaAdded, onCancel, shops = [], initialTea = null }) {
       name: initialTea.name || '',
       type: initialTea.type || 'Green',
       brand: initialTea.brand || '',
+      origin: initialTea.origin || '',
+      url: initialTea.url || '',
+      imageUrl: initialTea.imageUrl || '',
       temperature: initialTea.temperature || '85-90°C',
       quantity: initialTea.quantity || '',
       time: initialTea.time || '',
@@ -47,6 +54,9 @@ function AddTea({ onTeaAdded, onCancel, shops = [], initialTea = null }) {
       name: formData.name,
       type: formData.type,
       brand: formData.brand,
+      origin: formData.origin || null,
+      url: formData.url || null,
+      image_url: formData.imageUrl || null,
       temperature: formData.temperature,
       quantity: formData.quantity,
       time: formData.time,
@@ -54,10 +64,7 @@ function AddTea({ onTeaAdded, onCancel, shops = [], initialTea = null }) {
       method: formData.method,
       in_stock: formData.inStock,
       is_wishlist: formData.isWishlist,
-      description: formData.description,
-      origin: initialTea?.origin ?? null,
-      url: initialTea?.url ?? null,
-      image_url: initialTea?.imageUrl ?? null
+      description: formData.description
     };
 
     const request = isEditing
@@ -76,6 +83,52 @@ function AddTea({ onTeaAdded, onCancel, shops = [], initialTea = null }) {
 
   const handleChange = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleScrapeInfo = async () => {
+    if (!formData.url) {
+      alert('Please enter a URL first');
+      return;
+    }
+    setScraping(true);
+    try {
+      const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(formData.url)}`;
+      const response = await fetch(proxyUrl);
+      const data = await response.json();
+      if (!data.contents) {
+        throw new Error('No content');
+      }
+      const doc = new DOMParser().parseFromString(data.contents, 'text/html');
+      const title =
+        doc.querySelector('meta[property="og:title"]')?.getAttribute('content') ||
+        doc.querySelector('meta[name="twitter:title"]')?.getAttribute('content') ||
+        doc.querySelector('title')?.textContent ||
+        '';
+      const description =
+        doc.querySelector('meta[name="description"]')?.getAttribute('content') ||
+        doc.querySelector('meta[property="og:description"]')?.getAttribute('content') ||
+        '';
+      const imageUrl =
+        doc.querySelector('meta[property="og:image"]')?.getAttribute('content') ||
+        '';
+
+      if (title && !formData.name) {
+        handleChange('name', title.trim());
+      }
+      if (description && !formData.description) {
+        handleChange('description', description.trim().slice(0, 500));
+      }
+      if (imageUrl) {
+        handleChange('imageUrl', imageUrl.trim());
+      }
+
+      alert('✅ Information scrapée avec succès. Veuillez vérifier le formulaire.');
+    } catch (err) {
+      console.error('Scraping error:', err);
+      alert('Could not scrape information from this URL. Please enter details manually.');
+    } finally {
+      setScraping(false);
+    }
   };
 
   return (
@@ -111,6 +164,54 @@ function AddTea({ onTeaAdded, onCancel, shops = [], initialTea = null }) {
               <option key={shop.id} value={shop.name} />
             ))}
           </datalist>
+        </div>
+
+        <div className="form-group">
+          <label>Origin / Provenance</label>
+          <input
+            type="text"
+            value={formData.origin}
+            onChange={(e) => handleChange('origin', e.target.value)}
+            placeholder="ex: China, Japan, India, Taiwan..."
+          />
+          <small>L'origine sera normalisée automatiquement (ex: Chine → China, Taïwan → Taiwan)</small>
+        </div>
+
+        <div className="form-group">
+          <label>URL (Optional)</label>
+          <input
+            type="url"
+            value={formData.url}
+            onChange={(e) => handleChange('url', e.target.value)}
+            placeholder="https://teashop.com/dragon-well"
+          />
+          <div className="url-actions">
+            <button
+              type="button"
+              className="btn-scrape"
+              onClick={handleScrapeInfo}
+              disabled={scraping}
+            >
+              {scraping ? 'Scraping…' : '⬇️ Scrape Info'}
+            </button>
+          </div>
+        </div>
+
+        <div className="form-group">
+          <label>Image URL (Optional)</label>
+          <input
+            type="url"
+            value={formData.imageUrl}
+            onChange={(e) => handleChange('imageUrl', e.target.value)}
+            placeholder="https://example.com/tea-image.jpg"
+          />
+          <small>Collez l'URL d'une image ou laissez vide si scrapée automatiquement</small>
+          {formData.imageUrl && (
+            <div className="image-preview">
+              <img src={formData.imageUrl} alt="Preview" onError={() => handleChange('imageUrl', '')} />
+              <button type="button" className="remove-image-btn" onClick={() => handleChange('imageUrl', '')}>×</button>
+            </div>
+          )}
         </div>
 
         <div className="form-group">
