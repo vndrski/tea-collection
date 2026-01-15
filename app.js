@@ -1967,8 +1967,8 @@ class TeaApp {
   exportData() {
     try {
       // Ensure teas array exists
-      const teas = this.teas || [];
-      const shops = this.shops || [];
+      const teas = this.store?.getAllTeas?.() || [];
+      const shops = this.store?.getAllShops?.() || [];
       
       const data = {
         teas: teas,
@@ -2086,26 +2086,28 @@ class TeaApp {
       throw new Error('Format de fichier invalide');
     }
 
-    const currentCount = this.teas ? this.teas.length : 0;
+    const currentCount = this.store?.getAllTeas?.().length || 0;
     const confirmMsg = `Voulez-vous importer ${data.teas.length} thé(s) depuis ${sourceLabel} ?\n\n` +
       `⚠️ Attention : Cela va remplacer vos données actuelles (${currentCount} thés).`;
 
     if (!skipConfirm && !confirm(confirmMsg)) return;
 
     // Import teas
-    this.teas = data.teas;
-    this.saveTeas();
+    this.store.teas = data.teas;
+    this.store.saveTeas();
 
     // Import shops if present
     if (data.shops && Array.isArray(data.shops)) {
-      localStorage.setItem('teaShopsDatabase', JSON.stringify(data.shops));
+      this.store.shops = data.shops;
+      this.store.saveShops();
     }
 
     // Refresh display
     this.renderTeas();
     this.updateTeaCount?.();
 
-    alert(`✅ Import réussi !\n${this.teas.length} thés importés.`);
+    const importedCount = this.store?.getAllTeas?.().length || data.teas.length;
+    alert(`✅ Import réussi !\n${importedCount} thés importés.`);
   }
 
 }
