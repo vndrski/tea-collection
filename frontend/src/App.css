@@ -6,12 +6,14 @@
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-  background: #f5f5f5;
+  background: #ffffff;
+  color: #000000;
 }
 
 .app {
   min-height: 100vh;
   padding-bottom: 80px;
+  background: #ffffff;
 }
 
 .error-banner {
@@ -56,12 +58,13 @@ body {
 }
 
 .toggle-stock {
-  padding: 6px 12px;
-  background: #28a745;
-  color: white;
+  padding: 8px 16px;
+  background: #a6ff47;
+  color: #000000;
   border: none;
-  border-radius: 6px;
+  border-radius: 20px;
   font-size: 12px;
+  font-weight: 600;
   cursor: pointer;
 }
 
@@ -115,8 +118,8 @@ body {
 }
 
 .filter-buttons button.active {
-  background: #28a745;
-  color: white;
+  background: #a6ff47;
+  color: #000000;
 }
 
 .tea-list {
@@ -131,7 +134,8 @@ body {
   padding: 16px;
   display: flex;
   gap: 16px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: none;
+  border: 1px solid #f0f0f0;
   position: relative;
   overflow: hidden;
 }
@@ -204,8 +208,8 @@ body {
 }
 
 .tea-type {
-  color: #28a745;
-  font-weight: 500;
+  color: #000000;
+  font-weight: 600;
   margin-bottom: 4px;
 }
 
@@ -309,8 +313,8 @@ body {
 }
 
 .button-group button.active {
-  background: #28a745;
-  color: white;
+  background: #a6ff47;
+  color: #000000;
 }
 
 .temperature-selector {
@@ -332,11 +336,11 @@ body {
 .temperature-value {
   flex: 1;
   padding: 12px;
-  background: #28a745;
-  color: white;
+  background: #a6ff47;
+  color: #000000;
   border-radius: 20px;
   text-align: center;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .form-actions {
@@ -357,8 +361,9 @@ body {
 }
 
 .btn-primary {
-  background: #28a745;
-  color: white;
+  background: #a6ff47;
+  color: #000000;
+  font-weight: 600;
 }
 
 .btn-secondary {
@@ -389,7 +394,7 @@ body {
 }
 
 .shop-card a {
-  color: #28a745;
+  color: #000000;
   font-size: 13px;
   text-decoration: none;
   word-break: break-all;
@@ -441,8 +446,8 @@ body {
   width: 56px;
   height: 56px;
   border-radius: 50%;
-  background: #28a745;
-  color: white;
+  background: #a6ff47;
+  color: #000000;
   border: none;
   font-size: 24px;
   cursor: pointer;
@@ -477,7 +482,9 @@ body {
 }
 
 .bottom-nav button.active {
-  color: #28a745;
+  color: #000000;
+  background: #a6ff47;
+  border-radius: 8px;
 }
 
 .nav-icon {
@@ -485,9 +492,13 @@ body {
 }
 
 .add-button {
-  background: #28a745 !important;
-  color: white !important;
+  background: #a6ff47 !important;
+  color: #000000 !important;
   border-radius: 8px;
+}
+
+.checkbox-label input {
+  margin: 0;
 }
 
 .loading {

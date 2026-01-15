@@ -5,6 +5,7 @@ import Wishlist from './components/Wishlist';
 import Shops from './components/Shops';
 import OriginsMap from './components/OriginsMap';
 import TeaDetail from './components/TeaDetail';
+import TimerWidget from './components/TimerWidget';
 import { supabase } from './lib/supabaseClient';
 import './legacy.css';
 import './App.css';
@@ -121,6 +122,8 @@ function App() {
           )}
         </>
       )}
+
+      <TimerWidget />
 
       {!selectedTea && <nav className="bottom-nav">
         <button

@@ -32,7 +32,7 @@ function Wishlist({ teas, loading, onSelectTea }) {
       <header className="collection-header">
         <div className="app-branding">
           <img src="/logo.png" alt="Sereni-Tea Logo" className="app-logo" />
-          <h1>✨ Wishlist</h1>
+          <h1>Wishlist</h1>
         </div>
         <div className="header-actions">
           <span className="tea-count">{filteredTeas.length} teas</span>

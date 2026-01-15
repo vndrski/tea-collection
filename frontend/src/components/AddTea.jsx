@@ -187,7 +187,7 @@ function AddTea({ onTeaAdded, onCancel, shops = [] }) {
               checked={formData.isWishlist}
               onChange={(e) => handleChange('isWishlist', e.target.checked)}
             />
-            <span>✨ Ajouter à la wishlist</span>
+            <span>Ajouter à la wishlist</span>
           </label>
           <small>Les thés wishlist n'apparaissent pas dans le stock.</small>
         </div>
