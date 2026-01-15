@@ -1,9 +1,10 @@
 import { useState } from 'react';
+import { supabase } from '../lib/supabaseClient';
 
 const TEA_TYPES = ['Oolong', 'Black', 'Green', 'White', 'Herbal'];
 const METHODS = ['Gongfu', 'Western', 'Grandpa', 'Cold Brew'];
 
-function AddTea({ onTeaAdded, onCancel }) {
+function AddTea({ onTeaAdded, onCancel, shops = [] }) {
   const [formData, setFormData] = useState({
     name: '',
     type: 'Green',
@@ -14,23 +15,38 @@ function AddTea({ onTeaAdded, onCancel }) {
     infusions: '',
     method: 'Gongfu',
     inStock: true,
+    isWishlist: false,
     description: ''
   });
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      const response = await fetch('/api/teas', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
-      });
-      if (response.ok) {
-        onTeaAdded();
-      }
-    } catch (error) {
-      console.error('Error adding tea:', error);
+    setSubmitting(true);
+    setError('');
+    const payload = {
+      name: formData.name,
+      type: formData.type,
+      brand: formData.brand,
+      temperature: formData.temperature,
+      quantity: formData.quantity,
+      time: formData.time,
+      infusions: formData.infusions,
+      method: formData.method,
+      in_stock: formData.inStock,
+      is_wishlist: formData.isWishlist,
+      description: formData.description
+    };
+
+    const { error: insertError } = await supabase.from('teas').insert(payload);
+    if (insertError) {
+      console.error('Error adding tea:', insertError);
+      setError(insertError.message);
+    } else {
+      onTeaAdded();
     }
+    setSubmitting(false);
   };
 
   const handleChange = (field, value) => {
@@ -52,6 +68,7 @@ function AddTea({ onTeaAdded, onCancel }) {
             value={formData.name}
             onChange={(e) => handleChange('name', e.target.value)}
             placeholder="Dragon Well"
+            required
           />
         </div>
 
@@ -62,7 +79,13 @@ function AddTea({ onTeaAdded, onCancel }) {
             value={formData.brand}
             onChange={(e) => handleChange('brand', e.target.value)}
             placeholder="Golden Dragon"
+            list="shops-list"
           />
+          <datalist id="shops-list">
+            {shops.map((shop) => (
+              <option key={shop.id} value={shop.name} />
+            ))}
+          </datalist>
         </div>
 
         <div className="form-group">
@@ -158,6 +181,18 @@ function AddTea({ onTeaAdded, onCancel }) {
         </div>
 
         <div className="form-group">
+          <label className="checkbox-label">
+            <input
+              type="checkbox"
+              checked={formData.isWishlist}
+              onChange={(e) => handleChange('isWishlist', e.target.checked)}
+            />
+            <span>✨ Ajouter à la wishlist</span>
+          </label>
+          <small>Les thés wishlist n'apparaissent pas dans le stock.</small>
+        </div>
+
+        <div className="form-group">
           <label>Description</label>
           <textarea
             value={formData.description}
@@ -167,12 +202,14 @@ function AddTea({ onTeaAdded, onCancel }) {
           />
         </div>
 
+        {error && <div className="form-error">⚠️ {error}</div>}
+
         <div className="form-actions">
           <button type="button" onClick={onCancel} className="btn-secondary">
             Cancel
           </button>
-          <button type="submit" className="btn-primary">
-            💾 Save Tea
+          <button type="submit" className="btn-primary" disabled={submitting}>
+            {submitting ? 'Saving…' : '💾 Save Tea'}
           </button>
         </div>
       </form>

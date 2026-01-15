@@ -3,10 +3,10 @@ import TeaCard from './TeaCard';
 
 const TEA_TYPES = ['All', 'Oolong', 'Black', 'Green', 'White', 'Herbal'];
 
-function Collection({ teas, loading }) {
+function Wishlist({ teas, loading }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedType, setSelectedType] = useState('All');
-  const [showOutOfStock, setShowOutOfStock] = useState(false);
+
   const filteredTeas = useMemo(() => {
     let list = teas;
     if (selectedType !== 'All') {
@@ -20,11 +20,8 @@ function Collection({ teas, loading }) {
           (tea.brand || '').toLowerCase().includes(searchLower)
       );
     }
-    if (!showOutOfStock) {
-      list = list.filter((tea) => tea.inStock);
-    }
     return list;
-  }, [teas, selectedType, searchTerm, showOutOfStock]);
+  }, [teas, selectedType, searchTerm]);
 
   if (loading) {
     return <div className="loading">Chargement...</div>;
@@ -33,15 +30,9 @@ function Collection({ teas, loading }) {
   return (
     <div className="collection">
       <header className="collection-header">
-        <h1>My Tea Collection</h1>
+        <h1>Wishlist</h1>
         <div className="header-actions">
           <span className="tea-count">{filteredTeas.length} teas</span>
-          <button 
-            className="toggle-stock"
-            onClick={() => setShowOutOfStock(!showOutOfStock)}
-          >
-            {showOutOfStock ? 'Hide' : 'Show'} Out of Stock
-          </button>
         </div>
       </header>
 
@@ -49,7 +40,7 @@ function Collection({ teas, loading }) {
         <span className="search-icon">🔍</span>
         <input
           type="text"
-          placeholder="Search teas or brands..."
+          placeholder="Search wishlist..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
@@ -73,16 +64,14 @@ function Collection({ teas, loading }) {
       <div className="tea-list">
         {filteredTeas.length === 0 ? (
           <div className="empty-state">
-            <p>No teas found</p>
+            <p>No wishlist teas found</p>
           </div>
         ) : (
-          filteredTeas.map(tea => (
-            <TeaCard key={tea.id} tea={tea} />
-          ))
+          filteredTeas.map((tea) => <TeaCard key={tea.id} tea={tea} />)
         )}
       </div>
     </div>
   );
 }
 
-export default Collection;
+export default Wishlist;

@@ -1,4 +1,5 @@
 function TeaCard({ tea }) {
+  const brand = tea.brand || '';
   return (
     <div className={`tea-card ${!tea.inStock ? 'out-of-stock' : ''}`}>
       {!tea.inStock && (
@@ -16,7 +17,7 @@ function TeaCard({ tea }) {
       <div className="tea-info">
         <h3>{tea.name}</h3>
         <p className="tea-type">{tea.type}</p>
-        <p className="tea-brand">{tea.brand}</p>
+        {brand && <p className="tea-brand">{brand}</p>}
         <div className="tea-details">
           <span>🌡️ {tea.temperature}</span>
           <span>⏱️ {tea.time}</span>
