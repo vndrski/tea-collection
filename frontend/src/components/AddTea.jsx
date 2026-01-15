@@ -92,40 +92,82 @@ function AddTea({ onTeaAdded, onCancel, shops = [], initialTea = null }) {
     }
     setScraping(true);
     try {
-      const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(formData.url)}`;
-      const response = await fetch(proxyUrl);
-      const data = await response.json();
-      if (!data.contents) {
-        throw new Error('No content');
-      }
-      const doc = new DOMParser().parseFromString(data.contents, 'text/html');
+      const fetchHtml = async () => {
+        const rawUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(formData.url)}`;
+        const jsonUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(formData.url)}`;
+        const attempts = [
+          { url: rawUrl, parse: (res) => res.text() },
+          { url: jsonUrl, parse: async (res) => {
+              const data = await res.json();
+              return data?.contents || '';
+            }
+          }
+        ];
+        for (const attempt of attempts) {
+          try {
+            const response = await fetch(attempt.url);
+            if (!response.ok) continue;
+            const html = await attempt.parse(response);
+            if (html && html.length > 200) return html;
+          } catch {
+            // try next
+          }
+        }
+        return '';
+      };
+
+      const html = await fetchHtml();
+      if (!html) throw new Error('No content');
+      const doc = new DOMParser().parseFromString(html, 'text/html');
+
+      const getMeta = (selector) => doc.querySelector(selector)?.getAttribute('content') || '';
       const title =
-        doc.querySelector('meta[property="og:title"]')?.getAttribute('content') ||
-        doc.querySelector('meta[name="twitter:title"]')?.getAttribute('content') ||
-        doc.querySelector('title')?.textContent ||
+        getMeta('meta[property="og:title"]') ||
+        getMeta('meta[name="twitter:title"]') ||
+        doc.querySelector('[itemprop="name"]')?.textContent?.trim() ||
+        doc.querySelector('h1')?.textContent?.trim() ||
+        doc.querySelector('title')?.textContent?.trim() ||
         '';
+
       const description =
-        doc.querySelector('meta[name="description"]')?.getAttribute('content') ||
-        doc.querySelector('meta[property="og:description"]')?.getAttribute('content') ||
+        getMeta('meta[name="description"]') ||
+        getMeta('meta[property="og:description"]') ||
+        doc.querySelector('[itemprop="description"]')?.textContent?.trim() ||
         '';
+
       const imageUrl =
-        doc.querySelector('meta[property="og:image"]')?.getAttribute('content') ||
+        getMeta('meta[property="og:image"]') ||
+        getMeta('meta[name="twitter:image"]') ||
         '';
 
-      if (title && !formData.name) {
-        handleChange('name', title.trim());
-      }
-      if (description && !formData.description) {
-        handleChange('description', description.trim().slice(0, 500));
-      }
-      if (imageUrl) {
-        handleChange('imageUrl', imageUrl.trim());
+      // Try JSON-LD image fallback
+      if (!imageUrl) {
+        const scripts = Array.from(doc.querySelectorAll('script[type="application/ld+json"]'));
+        for (const script of scripts) {
+          try {
+            const data = JSON.parse(script.textContent || '{}');
+            const image = Array.isArray(data.image) ? data.image[0] : data.image;
+            const candidate = image?.url || image;
+            if (candidate) {
+              handleChange('imageUrl', candidate);
+              break;
+            }
+          } catch {
+            // ignore
+          }
+        }
       }
 
-      alert('✅ Information scrapée avec succès. Veuillez vérifier le formulaire.');
+      if (title && !formData.name) handleChange('name', title);
+      if (description && !formData.description) {
+        handleChange('description', description.slice(0, 500));
+      }
+      if (imageUrl) handleChange('imageUrl', imageUrl);
+
+      alert('✅ Information scrapée. Vérifiez et complétez si besoin.');
     } catch (err) {
       console.error('Scraping error:', err);
-      alert('Could not scrape information from this URL. Please enter details manually.');
+      alert('Impossible de scraper cette URL. Merci de renseigner manuellement.');
     } finally {
       setScraping(false);
     }
