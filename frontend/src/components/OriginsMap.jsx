@@ -1,32 +1,14 @@
 import { useMemo, useState } from 'react';
 
-const REGION_CHIPS = [
-  'China',
-  'Fujian',
-  'Guangdong',
-  'Pinglin',
-  'Zhejiang',
-  'Hangzhou',
-  'Guizhou',
-  'Anhui',
-  'Taiwan',
-  'Nantou',
-  'Taitung',
-  'Alishan',
-  'Japan',
-  'Korea',
-  'Nepal',
-  'Thailand',
-  'Vietnam',
-  'Sri Lanka',
-  'Indonesia',
-  'Java',
-  'Kenya',
-  'New Zealand'
-];
+const SUBREGIONS = {
+  China: ['Fujian', 'Guangdong', 'Pinglin', 'Zhejiang', 'Hangzhou', 'Guizhou', 'Anhui'],
+  Taiwan: ['Nantou', 'Taitung', 'Alishan'],
+  Indonesia: ['Java']
+};
 
 function OriginsMap({ teas, loading }) {
   const [selectedRegion, setSelectedRegion] = useState(null);
+  const [selectedSubregion, setSelectedSubregion] = useState('All');
 
   const regionTeas = useMemo(() => {
     if (!selectedRegion) return [];
@@ -38,6 +20,20 @@ function OriginsMap({ teas, loading }) {
     });
   }, [selectedRegion, teas]);
 
+  const filteredRegionTeas = useMemo(() => {
+    if (!selectedSubregion || selectedSubregion === 'All') return regionTeas;
+    const sub = selectedSubregion.toLowerCase();
+    return regionTeas.filter((tea) => {
+      const origin = tea.origin?.toLowerCase() || '';
+      return origin.includes(sub);
+    });
+  }, [regionTeas, selectedSubregion]);
+
+  const handleSelectRegion = (region) => {
+    setSelectedRegion(region);
+    setSelectedSubregion('All');
+  };
+
   if (loading) {
     return <div className="loading">Chargement...</div>;
   }
@@ -47,21 +43,6 @@ function OriginsMap({ teas, loading }) {
       <header className="map-header">
         <h2>Origines des Thés</h2>
       </header>
-      <div className="filter-section">
-        <label>Regions</label>
-        <div className="filter-buttons">
-          {REGION_CHIPS.map((region) => (
-            <button
-              key={region}
-              className={`filter-btn ${selectedRegion === region ? 'active' : ''}`}
-              onClick={() => setSelectedRegion(region)}
-            >
-              {region}
-            </button>
-          ))}
-        </div>
-      </div>
-
       <div className="asia-map-container">
         <svg className="asia-map" viewBox="150 100 600 550">
           <path
@@ -71,7 +52,7 @@ function OriginsMap({ teas, loading }) {
             fill="#e8e8e8"
             stroke="#666666"
             strokeWidth="1"
-            onClick={() => setSelectedRegion('China')}
+            onClick={() => handleSelectRegion('China')}
           />
 
           <path
@@ -81,7 +62,7 @@ function OriginsMap({ teas, loading }) {
             fill="#e8e8e8"
             stroke="#666666"
             strokeWidth="1"
-            onClick={() => setSelectedRegion('India')}
+            onClick={() => handleSelectRegion('India')}
           />
 
           <path
@@ -91,7 +72,7 @@ function OriginsMap({ teas, loading }) {
             fill="#e8e8e8"
             stroke="#666666"
             strokeWidth="1"
-            onClick={() => setSelectedRegion('Japan')}
+            onClick={() => handleSelectRegion('Japan')}
           />
 
           <path
@@ -101,7 +82,7 @@ function OriginsMap({ teas, loading }) {
             fill="#e8e8e8"
             stroke="#666666"
             strokeWidth="1"
-            onClick={() => setSelectedRegion('Korea')}
+            onClick={() => handleSelectRegion('Korea')}
           />
 
           <ellipse
@@ -114,7 +95,7 @@ function OriginsMap({ teas, loading }) {
             fill="#e8e8e8"
             stroke="#666666"
             strokeWidth="1"
-            onClick={() => setSelectedRegion('Taiwan')}
+            onClick={() => handleSelectRegion('Taiwan')}
           />
 
           <path
@@ -124,7 +105,7 @@ function OriginsMap({ teas, loading }) {
             fill="#e8e8e8"
             stroke="#666666"
             strokeWidth="1"
-            onClick={() => setSelectedRegion('Nepal')}
+            onClick={() => handleSelectRegion('Nepal')}
           />
 
           <path
@@ -134,7 +115,7 @@ function OriginsMap({ teas, loading }) {
             fill="#e8e8e8"
             stroke="#666666"
             strokeWidth="1"
-            onClick={() => setSelectedRegion('Thailand')}
+            onClick={() => handleSelectRegion('Thailand')}
           />
 
           <path
@@ -144,7 +125,7 @@ function OriginsMap({ teas, loading }) {
             fill="#e8e8e8"
             stroke="#666666"
             strokeWidth="1"
-            onClick={() => setSelectedRegion('Vietnam')}
+            onClick={() => handleSelectRegion('Vietnam')}
           />
 
           <ellipse
@@ -157,7 +138,7 @@ function OriginsMap({ teas, loading }) {
             fill="#e8e8e8"
             stroke="#666666"
             strokeWidth="1"
-            onClick={() => setSelectedRegion('Sri Lanka')}
+            onClick={() => handleSelectRegion('Sri Lanka')}
           />
 
           <path
@@ -167,8 +148,34 @@ function OriginsMap({ teas, loading }) {
             fill="#e8e8e8"
             stroke="#666666"
             strokeWidth="1"
-            onClick={() => setSelectedRegion('Indonesia')}
+            onClick={() => handleSelectRegion('Indonesia')}
           />
+
+          <g onClick={() => handleSelectRegion('Kenya')}>
+            <circle
+              className={`region ${selectedRegion === 'Kenya' ? 'active' : ''}`}
+              cx="190"
+              cy="520"
+              r="10"
+              fill="#e8e8e8"
+              stroke="#666666"
+              strokeWidth="1"
+            />
+            <text x="190" y="545" textAnchor="middle" fill="#000000" fontSize="10" fontWeight="600">KENYA</text>
+          </g>
+
+          <g onClick={() => handleSelectRegion('New Zealand')}>
+            <circle
+              className={`region ${selectedRegion === 'New Zealand' ? 'active' : ''}`}
+              cx="690"
+              cy="530"
+              r="10"
+              fill="#e8e8e8"
+              stroke="#666666"
+              strokeWidth="1"
+            />
+            <text x="690" y="555" textAnchor="middle" fill="#000000" fontSize="10" fontWeight="600">NEW ZEALAND</text>
+          </g>
 
           <text x="450" y="240" textAnchor="middle" fill="#000000" fontSize="18" fontWeight="700">CHINA</text>
           <text x="270" y="350" textAnchor="middle" fill="#000000" fontSize="16" fontWeight="700">INDIA</text>
@@ -186,13 +193,26 @@ function OriginsMap({ teas, loading }) {
           <div className="region-details">
             <button className="close-details" onClick={() => setSelectedRegion(null)}>×</button>
             <h3>{selectedRegion}</h3>
+            {SUBREGIONS[selectedRegion] && (
+              <div className="filter-buttons" style={{ marginBottom: '12px' }}>
+                {['All', ...SUBREGIONS[selectedRegion]].map((region) => (
+                  <button
+                    key={region}
+                    className={`filter-btn ${selectedSubregion === region ? 'active' : ''}`}
+                    onClick={() => setSelectedSubregion(region)}
+                  >
+                    {region}
+                  </button>
+                ))}
+              </div>
+            )}
             <div id="region-teas-list">
-              {regionTeas.length === 0 ? (
+              {filteredRegionTeas.length === 0 ? (
                 <p style={{ color: '#666', textAlign: 'center', padding: '20px' }}>
-                  Aucun thé de {selectedRegion} dans votre collection
+                  Aucun thé pour cette région
                 </p>
               ) : (
-                regionTeas.map((tea) => (
+                filteredRegionTeas.map((tea) => (
                   <div key={tea.id} className="tea-item">
                     <h4>{tea.name}</h4>
                     <p>{tea.type} - {tea.brand || ''}</p>
