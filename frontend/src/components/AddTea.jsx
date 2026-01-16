@@ -253,7 +253,7 @@ function AddTea({ onTeaAdded, onCancel, shops = [], initialTea = null }) {
               onClick={handleScrapeInfo}
               disabled={scraping}
             >
-              {scraping ? 'Scraping…' : '⬇️ Scrape Info'}
+              {scraping ? 'Scraping…' : 'Scrape Info'}
             </button>
           </div>
         </div>
@@ -400,14 +400,14 @@ function AddTea({ onTeaAdded, onCancel, shops = [], initialTea = null }) {
         </div>
 
         <div className="form-group">
-          <label className="checkbox-label">
+          <div className="checkbox-row">
+            <span className="checkbox-title">Ajouter à la wishlist</span>
             <input
               type="checkbox"
               checked={formData.isWishlist}
               onChange={(e) => handleChange('isWishlist', e.target.checked)}
             />
-            <span>Ajouter à la wishlist</span>
-          </label>
+          </div>
           <small>Les thés wishlist n'apparaissent pas dans le stock.</small>
         </div>
 
@@ -428,7 +428,7 @@ function AddTea({ onTeaAdded, onCancel, shops = [], initialTea = null }) {
             Cancel
           </button>
           <button type="submit" className="btn-primary" disabled={submitting}>
-            {submitting ? 'Saving…' : isEditing ? '💾 Save Changes' : '💾 Save Tea'}
+            {submitting ? 'Saving…' : isEditing ? 'Save Changes' : 'Save Tea'}
           </button>
         </div>
       </form>
