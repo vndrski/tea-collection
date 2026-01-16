@@ -15,10 +15,13 @@ function Shops({ shops, onRefresh }) {
     if (!formData.name.trim()) return;
     setSubmitting(true);
     setError('');
-    const { error: insertError } = await supabase.from('shops').insert({
+    const payload = {
       name: formData.name.trim(),
-      website: formData.website.trim() || null
-    });
+      website: formData.website.trim()
+    };
+    const { error: insertError } = await supabase
+      .from('shops')
+      .upsert(payload, { onConflict: 'name,website' });
     if (insertError) {
       console.error('Error adding shop:', insertError);
       setError(insertError.message);

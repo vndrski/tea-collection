@@ -25,7 +25,9 @@ const mapTeaFromDb = (tea) => ({
   url: tea.url,
   imageUrl: tea.image_url ?? tea.imageUrl ?? null,
   inStock: tea.in_stock ?? tea.inStock ?? true,
-  isWishlist: tea.is_wishlist ?? tea.isWishlist ?? false
+  isWishlist: tea.is_wishlist ?? tea.isWishlist ?? false,
+  stockGrams: tea.stock_grams ?? tea.stockGrams ?? null,
+  rating: tea.rating ?? null
 });
 
 function App() {

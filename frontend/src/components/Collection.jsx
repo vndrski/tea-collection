@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import TeaCard from './TeaCard';
 
-const TEA_TYPES = ['All', 'Oolong', 'Black', 'Green', 'White', 'Herbal'];
+const TEA_TYPES = ['All', 'Oolong', 'Black', 'Green', 'White', 'Herbal', 'Smoked', 'Pu erh'];
 
 function Collection({ teas, loading, onSelectTea }) {
   const [searchTerm, setSearchTerm] = useState('');

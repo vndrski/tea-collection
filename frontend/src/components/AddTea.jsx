@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
 
-const TEA_TYPES = ['Oolong', 'Black', 'Green', 'White', 'Herbal'];
+const TEA_TYPES = ['Oolong', 'Black', 'Green', 'White', 'Herbal', 'Smoked', 'Pu erh'];
 const METHODS = ['Gongfu', 'Western', 'Grandpa', 'Cold Brew'];
 const TEMPERATURES = ['75-80°C', '80-85°C', '85-90°C', '90-95°C'];
 
@@ -20,7 +20,9 @@ function AddTea({ onTeaAdded, onCancel, shops = [], initialTea = null }) {
     method: 'Gongfu',
     inStock: true,
     isWishlist: false,
-    description: ''
+    description: '',
+    stockGrams: 75,
+    rating: 0
   });
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
@@ -43,7 +45,9 @@ function AddTea({ onTeaAdded, onCancel, shops = [], initialTea = null }) {
       method: initialTea.method || 'Gongfu',
       inStock: initialTea.inStock ?? true,
       isWishlist: initialTea.isWishlist ?? false,
-      description: initialTea.description || ''
+      description: initialTea.description || '',
+      stockGrams: initialTea.stockGrams ?? 75,
+      rating: initialTea.rating ?? 0
     });
   }, [initialTea]);
 
@@ -65,7 +69,11 @@ function AddTea({ onTeaAdded, onCancel, shops = [], initialTea = null }) {
       method: formData.method,
       in_stock: formData.inStock,
       is_wishlist: formData.isWishlist,
-      description: formData.description
+      description: formData.description,
+      stock_grams: Number.isFinite(Number(formData.stockGrams))
+        ? Number(formData.stockGrams)
+        : null,
+      rating: formData.rating || null
     };
 
     const request = isEditing
@@ -356,6 +364,38 @@ function AddTea({ onTeaAdded, onCancel, shops = [], initialTea = null }) {
             >
               Out of Stock
             </button>
+          </div>
+        </div>
+
+        <div className="form-group">
+          <label>Stock en grammes</label>
+          <div className="stock-slider">
+            <input
+              type="range"
+              min="0"
+              max="150"
+              step="25"
+              value={formData.stockGrams}
+              onChange={(e) => handleChange('stockGrams', e.target.value)}
+            />
+            <div className="stock-value">{formData.stockGrams} g</div>
+          </div>
+          <small>Repère: 50/75/100/150g</small>
+        </div>
+
+        <div className="form-group">
+          <label>Note</label>
+          <div className="rating-group">
+            {[1, 2, 3].map((value) => (
+              <button
+                key={value}
+                type="button"
+                className={formData.rating === value ? 'active' : ''}
+                onClick={() => handleChange('rating', value)}
+              >
+                {'★'.repeat(value)}
+              </button>
+            ))}
           </div>
         </div>
 

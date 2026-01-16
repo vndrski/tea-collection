@@ -47,6 +47,9 @@ function TeaDetail({ tea, onBack, onEdit, onDelete }) {
         </div>
 
         {tea.brand && <p className="tea-detail-brand">{tea.brand}</p>}
+        {tea.rating ? (
+          <div className="tea-rating detail-rating">{'★'.repeat(tea.rating)}</div>
+        ) : null}
         {tea.origin && <p className="tea-detail-origin">🌍 {tea.origin}</p>}
 
         {tea.url && (
@@ -95,8 +98,13 @@ function TeaDetail({ tea, onBack, onEdit, onDelete }) {
           )}
         </div>
 
-        <div className={`stock-badge ${tea.inStock ? 'in-stock' : 'out-of-stock'}`}>
-          {tea.inStock ? 'In Stock' : 'Out of Stock'}
+        <div className="stock-info">
+          <div className={`stock-badge ${tea.inStock ? 'in-stock' : 'out-of-stock'}`}>
+            {tea.inStock ? 'In Stock' : 'Out of Stock'}
+          </div>
+          {tea.stockGrams !== null && tea.stockGrams !== undefined && (
+            <div className="stock-grams">{tea.stockGrams} g</div>
+          )}
         </div>
 
         {tea.description && (

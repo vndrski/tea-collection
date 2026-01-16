@@ -501,6 +501,79 @@ body {
   margin: 0;
 }
 
+.rating-group {
+  display: flex;
+  gap: 8px;
+}
+
+.rating-group button {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 20px;
+  background: #e0e0e0;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.rating-group button.active {
+  background: #a6ff47;
+  color: #000000;
+  font-weight: 600;
+}
+
+.tea-rating {
+  font-size: 14px;
+  color: #000000;
+  margin-bottom: 6px;
+}
+
+.tea-rating.detail-rating {
+  padding: 0 20px 8px;
+}
+
+.stock-slider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.stock-slider input[type="range"] {
+  flex: 1;
+}
+
+.stock-value {
+  background: #a6ff47;
+  color: #000000;
+  padding: 6px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.stock-indicator {
+  margin-top: 8px;
+  font-size: 12px;
+  color: #666;
+}
+
+.stock-indicator.low {
+  color: #ff3319;
+  font-weight: 600;
+}
+
+.stock-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 20px 20px;
+}
+
+.stock-grams {
+  font-size: 14px;
+  font-weight: 600;
+  color: #000000;
+}
+
 .loading {
   text-align: center;
   padding: 40px;
