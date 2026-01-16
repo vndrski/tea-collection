@@ -3,6 +3,7 @@ import { supabase } from '../lib/supabaseClient';
 
 const TEA_TYPES = ['Oolong', 'Black', 'Green', 'White', 'Herbal'];
 const METHODS = ['Gongfu', 'Western', 'Grandpa', 'Cold Brew'];
+const TEMPERATURES = ['75-80°C', '80-85°C', '85-90°C', '90-95°C', '95°C', '100°C'];
 
 function AddTea({ onTeaAdded, onCancel, shops = [], initialTea = null }) {
   const [formData, setFormData] = useState({
@@ -83,6 +84,16 @@ function AddTea({ onTeaAdded, onCancel, shops = [], initialTea = null }) {
 
   const handleChange = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleTemperatureChange = (direction) => {
+    const currentIndex = TEMPERATURES.indexOf(formData.temperature);
+    const safeIndex = currentIndex === -1 ? 2 : currentIndex;
+    const nextIndex = Math.min(
+      TEMPERATURES.length - 1,
+      Math.max(0, safeIndex + direction)
+    );
+    handleChange('temperature', TEMPERATURES[nextIndex]);
   };
 
   const handleScrapeInfo = async () => {
@@ -275,9 +286,9 @@ function AddTea({ onTeaAdded, onCancel, shops = [], initialTea = null }) {
         <div className="form-group">
           <label>Temperature</label>
           <div className="temperature-selector">
-            <button type="button">‹</button>
+            <button type="button" onClick={() => handleTemperatureChange(-1)}>‹</button>
             <span className="temperature-value">{formData.temperature}</span>
-            <button type="button">›</button>
+            <button type="button" onClick={() => handleTemperatureChange(1)}>›</button>
           </div>
         </div>
 
