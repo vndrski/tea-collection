@@ -1,5 +1,16 @@
+const stockLabelFor = (grams) => {
+  if (grams === null || grams === undefined) return null;
+  const value = Number(grams);
+  if (Number.isNaN(value)) return null;
+  if (value <= 25) return 'Très peu';
+  if (value <= 50) return 'Peu';
+  if (value <= 100) return 'Moyen';
+  return 'Beaucoup';
+};
+
 function TeaDetail({ tea, onBack, onEdit, onDelete }) {
   if (!tea) return null;
+  const stockLabel = stockLabelFor(tea.stockGrams);
 
   const imageHtml = tea.imageUrl ? (
     <>
@@ -102,8 +113,10 @@ function TeaDetail({ tea, onBack, onEdit, onDelete }) {
           <div className={`stock-badge ${tea.inStock ? 'in-stock' : 'out-of-stock'}`}>
             {tea.inStock ? 'In Stock' : 'Out of Stock'}
           </div>
-          {tea.stockGrams !== null && tea.stockGrams !== undefined && (
-            <div className="stock-grams">{tea.stockGrams} g</div>
+          {stockLabel && (
+            <div className="stock-grams">
+              {stockLabel} · {tea.stockGrams} g
+            </div>
           )}
         </div>
 

@@ -29,6 +29,9 @@ function TeaCard({ tea, onSelect }) {
         }
       }}
     >
+      {isLowStock && (
+        <div className="low-stock-badge">Stock faible</div>
+      )}
       {!tea.inStock && (
         <div className="out-of-stock-overlay">
           <span>Out of Stock</span>
