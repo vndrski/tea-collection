@@ -145,17 +145,18 @@ body {
 }
 
 .tea-list {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
 }
 
 .tea-card {
   background: var(--panel);
   border-radius: var(--radius-card);
-  padding: 16px;
-  display: flex;
-  gap: 16px;
+  padding: 10px;
+  display: grid;
+  grid-template-columns: 56px 1fr;
+  gap: 10px;
   box-shadow: var(--shadow);
   border: 1px solid var(--border);
   position: relative;
@@ -196,9 +197,9 @@ body {
 }
 
 .tea-image {
-  width: 80px;
-  height: 80px;
-  border-radius: 8px;
+  width: 56px;
+  height: 56px;
+  border-radius: 10px;
   overflow: hidden;
   flex-shrink: 0;
 }
@@ -224,21 +225,27 @@ body {
 }
 
 .tea-info h3 {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: bold;
+  margin-bottom: 4px;
+}
+
+.tea-meta-line {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
   margin-bottom: 4px;
 }
 
 .tea-type {
   color: var(--ink);
   font-weight: 600;
-  margin-bottom: 4px;
 }
 
 .tea-brand {
   color: #666;
-  font-size: 14px;
-  margin-bottom: 8px;
+  font-size: 13px;
 }
 
 .tea-details {
@@ -562,7 +569,7 @@ body {
 .tea-rating {
   font-size: 14px;
   color: #000000;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 }
 
 .tea-rating.detail-rating {
@@ -589,9 +596,15 @@ body {
 }
 
 .stock-indicator {
-  margin-top: 8px;
+  margin-top: 6px;
   font-size: 12px;
   color: #666;
+}
+
+@media (max-width: 720px) {
+  .tea-list {
+    grid-template-columns: 1fr;
+  }
 }
 
 .stock-indicator.low {
