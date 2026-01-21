@@ -51,6 +51,45 @@ function AddTea({ onTeaAdded, onCancel, shops = [], initialTea = null }) {
     });
   }, [initialTea]);
 
+  const normalizeOrigin = (origin) => {
+    if (!origin) return null;
+    const raw = origin.trim();
+    const lower = raw.toLowerCase();
+    const mappings = [
+      { keys: ['chine', 'china', 'chinois', 'chinoise'], canonical: 'China' },
+      { keys: ['japon', 'japan', 'japonais', 'japonaise', 'nippon'], canonical: 'Japan' },
+      { keys: ['inde', 'india', 'indien', 'indienne'], canonical: 'India' },
+      { keys: ['taiwan', 'taïwan', 'formosa', 'formose'], canonical: 'Taiwan' },
+      { keys: ['sri lanka', 'srilanka', 'ceylon', 'ceylan'], canonical: 'Sri Lanka' },
+      { keys: ['nepal', 'népal', 'nepalais', 'népalais'], canonical: 'Nepal' },
+      { keys: ['vietnam', 'viêt nam', 'vietnamien', 'vietnamese'], canonical: 'Vietnam' },
+      { keys: ['thailand', 'thaïlande', 'thai', 'thaï'], canonical: 'Thailand' },
+      { keys: ['korea', 'corée', 'coree', 'korean', 'coréen'], canonical: 'Korea' },
+      { keys: ['indonesia', 'indonésie', 'indonesie', 'indonesian'], canonical: 'Indonesia' },
+      { keys: ['kenya'], canonical: 'Kenya' },
+      { keys: ['new zealand', 'nouvelle-zelande', 'nouvelle zeland', 'nouvelle zelande'], canonical: 'New Zealand' }
+    ];
+
+    const normalize = (value) =>
+      value
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .trim();
+
+    const normalized = normalize(lower);
+    for (const map of mappings) {
+      for (const key of map.keys) {
+        const normalizedKey = normalize(key);
+        if (normalized === normalizedKey || normalized.startsWith(normalizedKey + ' ')) {
+          const suffix = raw.slice(raw.toLowerCase().indexOf(key) + key.length);
+          return `${map.canonical}${suffix}`;
+        }
+      }
+    }
+    return raw.charAt(0).toUpperCase() + raw.slice(1);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
@@ -59,7 +98,7 @@ function AddTea({ onTeaAdded, onCancel, shops = [], initialTea = null }) {
       name: formData.name,
       type: formData.type,
       brand: formData.brand,
-      origin: formData.origin || null,
+      origin: normalizeOrigin(formData.origin),
       url: formData.url || null,
       image_url: formData.imageUrl || null,
       temperature: formData.temperature,
