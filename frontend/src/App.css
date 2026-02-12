@@ -650,6 +650,12 @@ body {
   color: var(--sage-dark);
 }
 
+.nav-btn.active {
+  background: rgba(217, 217, 217, 0.6);
+  color: var(--sage-dark);
+  border-radius: 12px;
+}
+
 .nav-icon {
   font-size: 22px;
 }
@@ -661,6 +667,10 @@ body {
   box-shadow: var(--shadow);
   transform: translateY(-18px);
   padding: 12px 14px;
+}
+
+.add-button .nav-icon {
+  color: #ffffff;
 }
 
 .checkbox-label input {
