@@ -14,8 +14,8 @@
   --muted: #8c8b8c;
   --panel: #ffffff;
   --bg: #e2e2da;
-  --border: rgba(68, 65, 67, 0.12);
-  --glass: rgba(255, 255, 255, 0.6);
+  --border: rgba(68, 65, 67, 0.14);
+  --glass: rgba(255, 255, 255, 0.7);
   --shadow: 0 14px 36px rgba(38, 38, 38, 0.12);
   --shadow-soft: 0 8px 20px rgba(38, 38, 38, 0.08);
   --radius-card: 22px;
@@ -466,7 +466,7 @@ body {
   padding: 10px 16px;
   border: none;
   border-radius: var(--radius-pill);
-  background: var(--butter);
+  background: #d9d9d9;
   color: var(--ink);
   font-size: 14px;
   cursor: pointer;
@@ -522,7 +522,7 @@ body {
 
 .btn-primary {
   background: var(--sage-dark);
-  color: #f3f2ec;
+  color: #ffffff;
   font-weight: 600;
 }
 
@@ -607,7 +607,7 @@ body {
   height: 56px;
   border-radius: 50%;
   background: var(--sage-dark);
-  color: #f3f2ec;
+  color: #ffffff;
   border: none;
   font-size: 24px;
   cursor: pointer;
@@ -656,7 +656,7 @@ body {
 
 .add-button {
   background: var(--sage-dark) !important;
-  color: #f3f2ec !important;
+  color: #ffffff !important;
   border-radius: 999px;
   box-shadow: var(--shadow);
   transform: translateY(-18px);
@@ -892,15 +892,15 @@ body {
   height: 100%;
   display: block;
   border-radius: 999px;
-  background: #8fa79f;
+  background: #a19e9d;
 }
 
 .stock-bar-fill.low {
-  background: #b57a6d;
+  background: #595859;
 }
 
 .stock-bar-fill.mid {
-  background: #b7a57c;
+  background: #8c8b8c;
 }
 
 .detail-stock {
