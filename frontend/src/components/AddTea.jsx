@@ -1,11 +1,19 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
+import { upsertLocalTea } from '../lib/localStore';
 
 const TEA_TYPES = ['Oolong', 'Black', 'Green', 'White', 'Herbal', 'Smoked', 'Pu erh'];
 const METHODS = ['Gongfu', 'Western', 'Grandpa', 'Cold Brew'];
 const TEMPERATURES = ['75-80°C', '80-85°C', '85-90°C', '90-95°C'];
 
-function AddTea({ onTeaAdded, onCancel, shops = [], initialTea = null }) {
+function AddTea({
+  onTeaAdded,
+  onCancel,
+  shops = [],
+  initialTea = null,
+  storageMode = 'supabase',
+  onUseLocal
+}) {
   const [formData, setFormData] = useState({
     name: '',
     type: 'Green',
@@ -115,6 +123,34 @@ function AddTea({ onTeaAdded, onCancel, shops = [], initialTea = null }) {
       rating: formData.rating || null
     };
 
+    if (storageMode === 'local') {
+      const localTea = {
+        id: initialTea?.id,
+        name: formData.name,
+        type: formData.type,
+        brand: formData.brand,
+        origin: normalizeOrigin(formData.origin),
+        url: formData.url || null,
+        imageUrl: formData.imageUrl || null,
+        temperature: formData.temperature,
+        quantity: formData.quantity,
+        time: formData.time,
+        infusions: formData.infusions,
+        method: formData.method,
+        inStock: formData.inStock,
+        isWishlist: formData.isWishlist,
+        description: formData.description,
+        stockGrams: Number.isFinite(Number(formData.stockGrams))
+          ? Number(formData.stockGrams)
+          : null,
+        rating: formData.rating || null
+      };
+      upsertLocalTea(localTea);
+      onTeaAdded();
+      setSubmitting(false);
+      return;
+    }
+
     const request = isEditing
       ? supabase.from('teas').update(payload).eq('id', initialTea.id)
       : supabase.from('teas').insert(payload);
@@ -122,7 +158,31 @@ function AddTea({ onTeaAdded, onCancel, shops = [], initialTea = null }) {
     const { error: saveError } = await request;
     if (saveError) {
       console.error('Error saving tea:', saveError);
-      setError(saveError.message);
+      setError('Supabase en pause. Enregistrement local uniquement.');
+      onUseLocal?.();
+      const localTea = {
+        id: initialTea?.id,
+        name: formData.name,
+        type: formData.type,
+        brand: formData.brand,
+        origin: normalizeOrigin(formData.origin),
+        url: formData.url || null,
+        imageUrl: formData.imageUrl || null,
+        temperature: formData.temperature,
+        quantity: formData.quantity,
+        time: formData.time,
+        infusions: formData.infusions,
+        method: formData.method,
+        inStock: formData.inStock,
+        isWishlist: formData.isWishlist,
+        description: formData.description,
+        stockGrams: Number.isFinite(Number(formData.stockGrams))
+          ? Number(formData.stockGrams)
+          : null,
+        rating: formData.rating || null
+      };
+      upsertLocalTea(localTea);
+      onTeaAdded();
     } else {
       onTeaAdded();
     }

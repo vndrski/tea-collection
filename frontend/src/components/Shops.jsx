@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
+import { upsertLocalShop } from '../lib/localStore';
 
-function Shops({ shops, onRefresh }) {
+function Shops({ shops, onRefresh, storageMode = 'supabase' }) {
   const [formData, setFormData] = useState({ name: '', website: '' });
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
@@ -19,12 +20,24 @@ function Shops({ shops, onRefresh }) {
       name: formData.name.trim(),
       website: formData.website.trim()
     };
+
+    if (storageMode === 'local') {
+      upsertLocalShop(payload);
+      setFormData({ name: '', website: '' });
+      onRefresh?.();
+      setSubmitting(false);
+      return;
+    }
+
     const { error: insertError } = await supabase
       .from('shops')
       .upsert(payload, { onConflict: 'name,website' });
     if (insertError) {
       console.error('Error adding shop:', insertError);
-      setError(insertError.message);
+      setError('Supabase en pause. Boutique enregistree localement.');
+      upsertLocalShop(payload);
+      setFormData({ name: '', website: '' });
+      onRefresh?.();
     } else {
       setFormData({ name: '', website: '' });
       onRefresh?.();

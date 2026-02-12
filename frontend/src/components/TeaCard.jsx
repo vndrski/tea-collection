@@ -8,11 +8,20 @@ const stockLabelFor = (grams) => {
   return 'Beaucoup';
 };
 
+const typeKey = (type) => (type || 'other').toLowerCase().replace(/\s+/g, '-');
+
 function TeaCard({ tea, onSelect }) {
   const brand = tea.brand || '';
   const stockLabel = stockLabelFor(tea.stockGrams);
   const isLowStock = stockLabel === 'Très peu' || stockLabel === 'Peu';
+  const stockValue = Number(tea.stockGrams);
+  const stockPercent =
+    stockLabel && !Number.isNaN(stockValue)
+      ? Math.min(100, Math.max(0, (stockValue / 150) * 100))
+      : null;
+  const stockTone = isLowStock ? 'low' : stockLabel === 'Moyen' ? 'mid' : 'high';
   const isClickable = Boolean(onSelect);
+  const typeClass = `type-${typeKey(tea.type)}`;
   return (
     <div
       className={`tea-card ${!tea.inStock ? 'out-of-stock' : ''} ${
@@ -44,18 +53,22 @@ function TeaCard({ tea, onSelect }) {
           <div className="placeholder-image">🍵</div>
         )}
       </div>
-      <div className="tea-info">
+      <div className="tea-card-body">
+        <span className={`tea-type-badge ${typeClass}`}>
+          <span className={`type-dot ${typeClass}`}></span>
+          {tea.type}
+        </span>
         <h3>{tea.name}</h3>
-        <div className="tea-meta-line">
-          <span className="tea-type">{tea.type}</span>
-          {brand && <span className="tea-brand">• {brand}</span>}
-        </div>
+        {brand && <span className="tea-brand">{brand}</span>}
         {tea.rating ? (
           <div className="tea-rating">{'★'.repeat(tea.rating)}</div>
         ) : null}
-        {stockLabel && (
-          <div className={`stock-indicator ${isLowStock ? 'low' : ''}`}>
-            Stock: {stockLabel} ({tea.stockGrams}g)
+        {stockPercent !== null && (
+          <div className="stock-bar">
+            <span
+              className={`stock-bar-fill ${stockTone}`}
+              style={{ width: `${stockPercent}%` }}
+            ></span>
           </div>
         )}
       </div>
